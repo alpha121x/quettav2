@@ -31,7 +31,7 @@
                         <div class="col-lg-3">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Filter</h5>
+                                    <h5 class="card-title"><i class="bi bi-funnel-fill"></i> Filter</h5>
 
                                     <!-- Vertical Form -->
                                     <form class="row g-3">
@@ -52,7 +52,7 @@
                                             <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
                                         </div>
                                         <div class="text-center">
-                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                            <button type="submit" class="btn btn-success">Submit</button>
                                             <button type="reset" class="btn btn-secondary">Reset</button>
                                         </div>
                                     </form><!-- Vertical Form -->
@@ -84,7 +84,7 @@
                         <div class="col-lg-3">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Filter</h5>
+                                    <h5 class="card-title"><i class="bi bi-list-ul"></i> TOC</h5>
 
                                     <!-- Vertical Form -->
                                     <form class="row g-3">
@@ -105,7 +105,7 @@
                                             <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
                                         </div>
                                         <div class="text-center">
-                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                            <button type="submit" class="btn btn-success">Submit</button>
                                             <button type="reset" class="btn btn-secondary">Reset</button>
                                         </div>
                                     </form><!-- Vertical Form -->

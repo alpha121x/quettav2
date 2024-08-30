@@ -62,7 +62,7 @@ try {
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
           <div class="collapse navbar-collapse">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 p-1">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 p-2">
               <li class="nav-item">
                 <a class="nav-link <?php echo $current_page == 'index.php' ? 'active' : ''; ?> fw-bold" aria-current="page" href="index.php" style="padding: 6px 12px;">
                   Dashboard
@@ -74,7 +74,7 @@ try {
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link <?php echo $current_page == '#' ? 'active' : ''; ?> fw-bold" href="#" style="padding: 6px 12px;">
+                <a class="nav-link <?php echo $current_page == 'parcel_details.php' ? 'active' : ''; ?> fw-bold" href="parcel_details.php" style="padding: 6px 12px;">
                   Parcel Details
                 </a>
               </li>
