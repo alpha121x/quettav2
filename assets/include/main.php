@@ -243,7 +243,6 @@
       </div>
     </div>
 
-
     <script>
       // Get elements
       const openDrawerBtn = document.getElementById('openDrawerBtn');
