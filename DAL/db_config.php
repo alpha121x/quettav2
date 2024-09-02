@@ -1,7 +1,7 @@
 <?php
 // Database connection settings
 $host = 'localhost';
-$dbname = 'new_db'; // Your database name
+$dbname = 'db_landsurvey_quetta'; // Your database name
 $user = 'postgres'; // Your PostgreSQL username
 $password = '12345'; // Your PostgreSQL password
 

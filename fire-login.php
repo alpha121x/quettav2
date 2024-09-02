@@ -16,7 +16,7 @@ if (isset($_POST['login'])) {
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Prepare the SQL query to prevent SQL injection
-        $query = "SELECT * FROM login_users WHERE username = :username AND password = :password";
+        $query = "SELECT * FROM tbl_users WHERE username = :username AND password = :password";
         
         $stmt = $pdo->prepare($query);
 

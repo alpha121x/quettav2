@@ -1,30 +1,5 @@
 <?php require "./DAL/db_config.php"; ?>
 <?php require "./auth.php"; ?>
-<?php
-// Assuming you have a PDO connection instance $pdo
-try {
-  // Prepare the SQL statement
-  $stmt = $pdo->prepare("SELECT * FROM login_users WHERE user_type = :user_type");
-
-  // Bind the user_type parameter to the SQL statement
-  $stmt->bindParam(':user_type', $_SESSION['user_type'], PDO::PARAM_STR);
-
-  // Execute the statement
-  $stmt->execute();
-
-  // Fetch the user's data
-  $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
-
-  // Check if a user was found
-  if ($user_data) {
-    $profile_pic = $user_data['user_image'];
-  } else {
-    echo "User not found.";
-  }
-} catch (PDOException $e) {
-  echo "Error: " . $e->getMessage();
-}
-?>
 
 <!-- ======= Header ======= -->
 <header id="header" class="header fixed-top d-flex align-items-center">

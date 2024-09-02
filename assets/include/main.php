@@ -78,6 +78,34 @@
     }
   </style>
 
+  <?php
+  // Include the database configuration file
+  require "./DAL/db_config.php";
+
+  try {
+    // Prepare the PDO queries
+    $totalZonesQuery = "SELECT COUNT(DISTINCT zone_code) FROM tbl_landuse_f";
+    $totalBlocksQuery = "SELECT COUNT(DISTINCT sheet_no) FROM tbl_landuse_f";
+    $totalParcelsQuery = "SELECT COUNT(DISTINCT parcel_id) FROM tbl_landuse_f";
+
+    // Execute the queries and fetch the counts using PDO
+    $stmtZones = $pdo->prepare($totalZonesQuery);
+    $stmtZones->execute();
+    $totalZones = $stmtZones->fetchColumn();
+
+    $stmtBlocks = $pdo->prepare($totalBlocksQuery);
+    $stmtBlocks->execute();
+    $totalBlocks = $stmtBlocks->fetchColumn();
+
+    $stmtParcels = $pdo->prepare($totalParcelsQuery);
+    $stmtParcels->execute();
+    $totalParcels = $stmtParcels->fetchColumn();
+  } catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+  }
+  ?>
+
+
 
   <section class="section dashboard">
     <div class="row">
@@ -94,7 +122,7 @@
                     <i class="bi bi-geo-alt" style="color: #28A745; font-size: 24px;"></i>
                   </div>
                   <div class="ps-3">
-                    <h6>6</h6>
+                    <h6><?php echo $totalZones; ?></h6>
                   </div>
                 </div>
               </div>
@@ -111,7 +139,7 @@
                     <i class="bi bi-grid" style="color: #28A745; font-size: 24px;"></i>
                   </div>
                   <div class="ps-3">
-                    <h6>2145</h6>
+                    <h6><?php echo $totalBlocks; ?></h6>
                   </div>
                 </div>
               </div>
@@ -128,63 +156,13 @@
                     <i class="bi bi-box-seam" style="color: #28A745; font-size: 24px;"></i>
                   </div>
                   <div class="ps-3">
-                    <h6>299,623</h6>
+                    <h6><?php echo $totalParcels; ?></h6>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Completed Blocks Card -->
-          <div class="col-lg-2 col-md-4 col-sm-6">
-            <div class="card info-card completed-blocks-card">
-              <div class="card-body">
-                <h5 class="card-title">Completed Blocks</h5>
-                <div class="d-flex align-items-center">
-                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="background-color: #e0f7fa;">
-                    <i class="bi bi-check-circle" style="color: #28A745; font-size: 24px;"></i>
-                  </div>
-                  <div class="ps-3">
-                    <h6>1646</h6>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Surveyed Parcels Card -->
-          <div class="col-lg-2 col-md-4 col-sm-6">
-            <div class="card info-card surveyed-parcels-card">
-              <div class="card-body">
-                <h5 class="card-title">Surveyed Parcels</h5>
-                <div class="d-flex align-items-center">
-                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="background-color: #e0f7fa;">
-                    <i class="bi bi-search" style="color: #28A745; font-size: 24px;"></i>
-                  </div>
-                  <div class="ps-3">
-                    <h6>286,298</h6>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Remaining Parcels Card -->
-          <div class="col-lg-2 col-md-4 col-sm-6">
-            <div class="card info-card remaining-parcels-card">
-              <div class="card-body">
-                <h5 class="card-title">Remaining Parcels</h5>
-                <div class="d-flex align-items-center">
-                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="background-color: #e0f7fa;">
-                    <i class="bi bi-inbox" style="color: #28A745; font-size: 24px;"></i>
-                  </div>
-                  <div class="ps-3">
-                    <h6>13,325</h6>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div><!-- End Cards -->
 
