@@ -1,4 +1,3 @@
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <main id="main" class="main">
 
   <div class="pagetitle">

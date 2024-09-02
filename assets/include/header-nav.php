@@ -40,7 +40,7 @@ try {
     <!-- <i class="bi bi-list toggle-sidebar-btn"></i> -->
   </div><!-- End Logo -->
 
-  <nav class="header-nav ms-auto">
+  <nav class="header-nav ms-auto me-5">
     <ul class="d-flex align-items-center">
 
       <style>
@@ -59,7 +59,7 @@ try {
       ?>
 
       <!-- Custom Navbar Section -->
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <nav class="navbar navbar-expand-lg navbar-light p-2">
         <div class="container-fluid">
           <div class="collapse navbar-collapse">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 p-2">
