@@ -4,7 +4,7 @@ require "./DAL/db_config.php";
 
 try {
   // Query to fetch parcel details (customize columns based on your needs)
-  $parcelDetailsQuery = "SELECT parcel_id, zone_code, land_type, land_sub_type, building_height, building_condition FROM tbl_landuse_f";
+  $parcelDetailsQuery = "SELECT parcel_id, zone_code, land_type, land_sub_type, building_height, building_condition FROM tbl_landuse_f LIMIT 10000";
 
   // Execute the query
   $stmt = $pdo->prepare($parcelDetailsQuery);

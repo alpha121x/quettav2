@@ -307,15 +307,15 @@
     );
   });
 
-  /**
+/**
    * Initiate Datatables
    */
-  var DataTable = require("datatables.net");
-  require("datatables.net-responsive");
+const datatables = select('.datatable', true)
+datatables.forEach(datatable => {
+  new simpleDatatables.DataTable(datatable);
+})
 
-  let table = new DataTable("#myTable", {
-    responsive: true,
-  });
+
 
   /**
    * Autoresize echart charts
