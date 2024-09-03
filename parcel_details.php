@@ -5,7 +5,6 @@ require "./DAL/db_config.php";
 
 <head>
   <title>Parcel Details</title>
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
   <?php include(__DIR__ . "/assets/include/linked-files.php") ?>
 </head>
 
@@ -106,7 +105,7 @@ require "./DAL/db_config.php";
           <!-- Data Table -->
           <div class="card">
             <div class="card-body">
-              <table id="datatable" class="display" style="width:100%">
+              <table id="datatable" class="table dataable" style="width:100%">
                 <thead>
                   <tr>
                     <th>Parcel ID</th>
@@ -139,8 +138,6 @@ require "./DAL/db_config.php";
 
   <!-- Scripts -->
   <?php include(__DIR__ . "/assets/include/script-files.php") ?>
-
-  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
   <script>
     $(document).ready(function() {
