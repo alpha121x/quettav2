@@ -9,7 +9,7 @@ $filter1 = isset($_POST['filter1']) ? $_POST['filter1'] : '';
 
 try {
     // Create a base SQL query
-    $sql = "SELECT parcel_id, zone_code, land_type, land_sub_type,modification_type, building_height, building_condition FROM public.tbl_landuse_f WHERE 1=1";
+    $sql = "SELECT parcel_id, zone_code, land_type, land_sub_type ,modification_type, building_height, building_condition FROM public.tbl_landuse_f WHERE 1=1";
 
     // Append conditions based on the filters
     if (!empty($zoneCode)) {
