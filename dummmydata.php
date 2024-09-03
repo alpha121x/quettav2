@@ -29,7 +29,6 @@ require "./DAL/db_config.php";
         <div class="col-lg-12">
           <div class="container mt-4">
             <div class="row align-items-end">
-
               <!-- Zone Selection -->
               <?php
               try {
@@ -98,9 +97,9 @@ require "./DAL/db_config.php";
                   <button type="button" class="btn btn-primary" id="search-btn">Search</button>
                 </div>
               </div>
-
             </div>
           </div>
+
           <!-- Data Table -->
           <div class="card">
             <div class="card-body">
@@ -136,36 +135,18 @@ require "./DAL/db_config.php";
   <!-- Scripts -->
   <?php include(__DIR__ . "/assets/include/script-files.php") ?>
 
-  <script>
-    // Fetch blocks when zone is selected
-    $('#zone-select').on('change', function() {
-      var zoneCode = $(this).val();
-      $.ajax({
-        type: 'POST',
-        url: 'DAL/fetch_blocks.php',
-        data: {
-          zone_code: zoneCode
-        },
-        success: function(response) {
-          $('#block-select').html(response);
-        },
-        error: function() {
-          console.error('Error fetching blocks');
-        }
-      });
-    });
-  </script>
-
+  <!-- Default DataTable Script -->
   <script>
     $(document).ready(function() {
-      $('#abc').DataTable({
+      // Initialize DataTable with default data (all records)
+      var table = $('#abc').DataTable({
         "processing": true,
         "serverSide": true,
-        "pageLength": 10, 
+        "pageLength": 10,
         "ajax": {
-          "url": "DAL/fetch_dummydata.php", 
+          "url": "DAL/fetch_dummydata.php", // Default data source
           "type": "POST",
-          "dataSrc": "data" 
+          "dataSrc": "data"
         },
         "columns": [{
             "data": "parcel_id"
@@ -189,6 +170,33 @@ require "./DAL/db_config.php";
             "data": "building_condition"
           }
         ]
+      });
+
+      // Fetch blocks when zone is selected
+      $('#zone-select').on('change', function() {
+        var zoneCode = $(this).val();
+        $.ajax({
+          type: 'POST',
+          url: 'DAL/fetch_blocks.php',
+          data: {
+            zone_code: zoneCode
+          },
+          success: function(response) {
+            $('#block-select').html(response);
+          },
+          error: function() {
+            console.error('Error fetching blocks');
+          }
+        });
+      });
+
+      // Apply filters and reload DataTable with filtered data
+      $('#search-btn').on('click', function() {
+        var zoneCode = $('#zone-select').val();
+        var block = $('#block-select').val();
+        var category = $('[aria-label="Select Category"]').val();
+
+        table.ajax.url('DAL/fetch_filter_data.php?zone_code=' + encodeURIComponent(zoneCode) + '&block=' + encodeURIComponent(block) + '&category=' + encodeURIComponent(category)).load();
       });
     });
   </script>
