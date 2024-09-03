@@ -27,6 +27,80 @@ require "./DAL/db_config.php";
     <section class="section">
       <div class="row">
         <div class="col-lg-12">
+          <div class="container mt-4">
+            <div class="row align-items-end">
+
+              <!-- Zone Selection -->
+              <?php
+              try {
+                $stmt = $pdo->query("SELECT DISTINCT zone_code FROM public.tbl_landuse_f ORDER BY zone_code ASC");
+                $zones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+              } catch (PDOException $e) {
+                echo "Error: " . $e->getMessage();
+              }
+              ?>
+              <div class="col-md-3 mb-3">
+                <div class="form-group">
+                  <select class="form-select" id="zone-select" aria-label="Select Zone">
+                    <option selected>Select Zone</option>
+                    <?php if (!empty($zones)): ?>
+                      <?php foreach ($zones as $zone): ?>
+                        <option value="<?= htmlspecialchars($zone['zone_code']); ?>">
+                          <?= htmlspecialchars($zone['zone_code']); ?>
+                        </option>
+                      <?php endforeach; ?>
+                    <?php else: ?>
+                      <option disabled>No Zones Available</option>
+                    <?php endif; ?>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Block Selection -->
+              <div class="col-md-3 mb-3">
+                <div class="form-group">
+                  <select class="form-select" id="block-select" aria-label="Select Block">
+                    <option selected>Select Block</option>
+                    <!-- Blocks will be populated based on the selected zone -->
+                  </select>
+                </div>
+              </div>
+
+              <!-- Category Selection -->
+              <?php
+              try {
+                $stmt = $pdo->query("SELECT DISTINCT modification_type FROM public.tbl_landuse_f ORDER BY modification_type ASC");
+                $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+              } catch (PDOException $e) {
+                echo "Error: " . $e->getMessage();
+              }
+              ?>
+              <div class="col-md-3 mb-3">
+                <div class="form-group">
+                  <select class="form-select" aria-label="Select Category">
+                    <option selected>Select Category</option>
+                    <?php if (!empty($categories)): ?>
+                      <?php foreach ($categories as $category): ?>
+                        <option value="<?= htmlspecialchars($category['modification_type']); ?>">
+                          <?= htmlspecialchars($category['modification_type']); ?>
+                        </option>
+                      <?php endforeach; ?>
+                    <?php else: ?>
+                      <option disabled>No Categories Available</option>
+                    <?php endif; ?>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Search Button -->
+              <div class="col-md-3 mb-3">
+                <div class="form-group">
+                  <button type="button" class="btn btn-primary" id="search-btn">Search</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
           <!-- Data Table -->
           <div class="card">
             <div class="card-body">
@@ -62,27 +136,58 @@ require "./DAL/db_config.php";
   <!-- Scripts -->
   <?php include(__DIR__ . "/assets/include/script-files.php") ?>
 
-
+  <script>
+    // Fetch blocks when zone is selected
+    $('#zone-select').on('change', function() {
+      var zoneCode = $(this).val();
+      $.ajax({
+        type: 'POST',
+        url: 'DAL/fetch_blocks.php',
+        data: {
+          zone_code: zoneCode
+        },
+        success: function(response) {
+          $('#block-select').html(response);
+        },
+        error: function() {
+          console.error('Error fetching blocks');
+        }
+      });
+    });
+  </script>
 
   <script>
     $(document).ready(function() {
       $('#abc').DataTable({
         "processing": true,
         "serverSide": true,
-        "pageLength": 10, // Default rows per page
+        "pageLength": 10, 
         "ajax": {
-          "url": "DAL/fetch_dummydata.php", // Make sure this points to the correct server-side script
+          "url": "DAL/fetch_dummydata.php", 
           "type": "POST",
-          "dataSrc": "data" // Ensure that your server-side script returns a 'data' key with an array
+          "dataSrc": "data" 
         },
-        "columns": [
-          { "data": "parcel_id" },
-          { "data": "zone_code" },
-          { "data": "land_type" },
-          { "data": "land_sub_type" },
-          { "data": "modification_type" },
-          { "data": "building_height" },
-          { "data": "building_condition" }
+        "columns": [{
+            "data": "parcel_id"
+          },
+          {
+            "data": "zone_code"
+          },
+          {
+            "data": "land_type"
+          },
+          {
+            "data": "land_sub_type"
+          },
+          {
+            "data": "modification_type"
+          },
+          {
+            "data": "building_height"
+          },
+          {
+            "data": "building_condition"
+          }
         ]
       });
     });
