@@ -105,7 +105,7 @@ require "./DAL/db_config.php";
           <!-- Data Table -->
           <div class="card">
             <div class="card-body">
-              <table id="datatable" class="table dataable" style="width:100%">
+              <table id="datatable" class="table table-striped" style="width:100%">
                 <thead>
                   <tr>
                     <th>Parcel ID</th>
