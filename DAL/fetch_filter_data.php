@@ -10,80 +10,71 @@ error_reporting(E_ALL);
 $zone_code = $_GET['zone_code'] ?? '';
 $block = $_GET['block'] ?? '';
 $category = $_GET['category'] ?? '';
-$start = $_GET['start'] ?? 0;   // Pagination start
-$length = $_GET['length'] ?? 10; // Number of records per page
+$start = (int)($_GET['start'] ?? 0);   // Pagination start
+$length = (int)($_GET['length'] ?? 10); // Number of records per page
 
-// Construct the SQL query based on filters
+// Base query
 $query = "SELECT * FROM public.tbl_landuse_f WHERE 1=1";
 
-// Validate and bind parameters using bindValue, ignoring invalid selections like 'Select Block'
-if (!empty($zone_code) && $zone_code !== 'Select Zone') {
-    $query .= " AND zone_code = :zone_code";
+// Add filters to query if they are valid
+$filters = [];
+if ($zone_code && $zone_code !== 'Select Zone') {
+    $filters[] = "zone_code = :zone_code";
 }
-if (!empty($block) && $block !== 'Select Block') {
-    $query .= " AND sheet_no = :block";
+if ($block && $block !== 'Select Block') {
+    $filters[] = "sheet_no = :block";
 }
-if (!empty($category) && $category !== 'Select Category') {
-    $query .= " AND modification_type = :category";
+if ($category && $category !== 'Select Category') {
+    $filters[] = "modification_type = :category";
+}
+if ($filters) {
+    $query .= " AND " . implode(" AND ", $filters);
 }
 
-// Add pagination with LIMIT and OFFSET for PostgreSQL
+// Add pagination
 $query .= " LIMIT :length OFFSET :start";
 
 $stmt = $pdo->prepare($query);
 
-// Bind parameters conditionally based on selection
-if (!empty($zone_code) && $zone_code !== 'Select Zone') {
+// Bind parameters
+if ($zone_code && $zone_code !== 'Select Zone') {
     $stmt->bindValue(':zone_code', $zone_code);
 }
-if (!empty($block) && $block !== 'Select Block') {
+if ($block && $block !== 'Select Block') {
     $stmt->bindValue(':block', $block);
 }
-if (!empty($category) && $category !== 'Select Category') {
+if ($category && $category !== 'Select Category') {
     $stmt->bindValue(':category', $category);
 }
-
-// Bind pagination parameters
-$stmt->bindValue(':start', (int)$start, PDO::PARAM_INT);
-$stmt->bindValue(':length', (int)$length, PDO::PARAM_INT);
+$stmt->bindValue(':length', $length, PDO::PARAM_INT);
+$stmt->bindValue(':start', $start, PDO::PARAM_INT);
 
 $stmt->execute();
 $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Get the total number of records without filters
-$totalRecordsQuery = "SELECT COUNT(*) FROM public.tbl_landuse_f";
-$totalRecordsStmt = $pdo->query($totalRecordsQuery);
+// Get total records count
+$totalRecordsStmt = $pdo->query("SELECT COUNT(*) FROM public.tbl_landuse_f");
 $totalRecords = $totalRecordsStmt->fetchColumn();
 
-// Get the number of filtered records
-$filteredRecordsQuery = "SELECT COUNT(*) FROM public.tbl_landuse_f WHERE 1=1";
-if (!empty($zone_code) && $zone_code !== 'Select Zone') {
-    $filteredRecordsQuery .= " AND zone_code = :zone_code";
+// Get filtered records count
+$filteredQuery = "SELECT COUNT(*) FROM public.tbl_landuse_f WHERE 1=1";
+if ($filters) {
+    $filteredQuery .= " AND " . implode(" AND ", $filters);
 }
-if (!empty($block) && $block !== 'Select Block') {
-    $filteredRecordsQuery .= " AND sheet_no = :block";
-}
-if (!empty($category) && $category !== 'Select Category') {
-    $filteredRecordsQuery .= " AND modification_type = :category";
-}
-
-$filteredRecordsStmt = $pdo->prepare($filteredRecordsQuery);
-
-// Bind the same parameters for filtered records count conditionally
-if (!empty($zone_code) && $zone_code !== 'Select Zone') {
+$filteredRecordsStmt = $pdo->prepare($filteredQuery);
+if ($zone_code && $zone_code !== 'Select Zone') {
     $filteredRecordsStmt->bindValue(':zone_code', $zone_code);
 }
-if (!empty($block) && $block !== 'Select Block') {
+if ($block && $block !== 'Select Block') {
     $filteredRecordsStmt->bindValue(':block', $block);
 }
-if (!empty($category) && $category !== 'Select Category') {
+if ($category && $category !== 'Select Category') {
     $filteredRecordsStmt->bindValue(':category', $category);
 }
-
 $filteredRecordsStmt->execute();
 $recordsFiltered = $filteredRecordsStmt->fetchColumn();
 
-// Prepare the response in the format expected by DataTables
+// Prepare and output response
 $response = [
     "recordsTotal" => $totalRecords,
     "recordsFiltered" => $recordsFiltered,
