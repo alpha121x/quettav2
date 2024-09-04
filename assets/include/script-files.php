@@ -7,8 +7,7 @@
   <!-- <script src="assets/vendor/simple-datatables/simple-datatables.js"></script> -->
   <script src="assets/vendor/tinymce/tinymce.min.js"></script>
   <script src="assets/vendor/php-email-form/validate.js"></script>
-  <script src="assets/js/main.js"></script>
-  <script src="assets/js/custom.js"></script>
+  
   <!-- <script src="assets/vendor/datatables/datatables.min.js"></script> -->
 
   <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.1.5/datatables.min.js"></script>
@@ -24,7 +23,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
 
-
+<script src="assets/js/main.js"></script>
+  <script src="assets/js/custom.js"></script>
 
 <script>
 		$(function()	{
