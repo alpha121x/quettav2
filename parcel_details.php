@@ -1,9 +1,10 @@
+<?php include(__DIR__ . "/auth.php") ?>
 <?php
 require "./DAL/db_config.php";
 ?>
 
 <head>
-  <title>Parcels Details</title>
+  <title>Parcel Details</title>
   <?php include(__DIR__ . "/assets/include/linked-files.php") ?>
 </head>
 
@@ -102,7 +103,7 @@ require "./DAL/db_config.php";
           <!-- Data Table -->
           <div class="card">
             <div class="card-body">
-              <table id="datatable" class="cell-border" style="width:100%">
+              <table id="table" class="table table-striped" style="width:100%">
                 <thead>
                   <tr>
                     <th>#</th>
@@ -115,8 +116,8 @@ require "./DAL/db_config.php";
                     <th>Building Condition</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <!-- Data will be populated by DataTables -->
+                <tbody id="tbody">
+                  <!-- Dynamic rows will be injected here by DataTables -->
                 </tbody>
               </table>
             </div>
@@ -135,23 +136,18 @@ require "./DAL/db_config.php";
   <!-- Scripts -->
   <?php include(__DIR__ . "/assets/include/script-files.php") ?>
 
-
-
+  <!-- Default DataTable Script -->
   <script>
     $(document).ready(function() {
-      // Initialize DataTable with server-side processing
-      var table = $('#datatable').DataTable({
+      // Initialize DataTable with default data (all records)
+      var table = $('#table').DataTable({
         "processing": true,
         "serverSide": true,
-        "responsive": true,
+        "pageLength": 10,
         "ajax": {
-          "url": "DAL/fetch_data.php",
+          "url": "DAL/fetch_data.php", // Default data source
           "type": "POST",
-          "data": function(d) {
-            d.zone_code = $('#zone-select').val();
-            d.block = $('#block-select').val();
-            d.category = $('[aria-label="Select Category"]').val();
-          }
+          "dataSrc": "data"
         },
         "columns": [{
             "data": null, // No data for row number, handled in createdRow
@@ -211,7 +207,14 @@ require "./DAL/db_config.php";
 
       // Apply filters and reload DataTable with filtered data
       $('#search-btn').on('click', function() {
-        table.ajax.reload(); // Reload table data based on current filters
+        var zoneCode = $('#zone-select').val();
+        var block = $('#block-select').val();
+        var category = $('[aria-label="Select Category"]').val();
+
+        console.log(zoneCode, block, category);
+
+        // Reload DataTable with filtered data
+        table.ajax.url('DAL/fetch_filter_data.php?zone_code=' + encodeURIComponent(zoneCode) + '&block=' + encodeURIComponent(block) + '&category=' + encodeURIComponent(category)).load();
       });
     });
   </script>
