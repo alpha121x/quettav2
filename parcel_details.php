@@ -18,7 +18,7 @@ require "./DAL/db_config.php";
     <div class="pagetitle">
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item"><a href="index.php">Home</a></li>
           <li class="breadcrumb-item active">Parcel Details</li>
         </ol>
       </nav>
