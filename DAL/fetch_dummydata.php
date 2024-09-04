@@ -1,6 +1,10 @@
 <?php
 require "db_config.php";
 
+// "?z=%&b=%"   -- onlin
+// ""
+
+
 // Get the request parameters from DataTables
 $draw = $_POST['draw'];
 $start = $_POST['start'];

@@ -11,12 +11,17 @@ $category = $_GET['category'] ?? '';
 // Construct the SQL query based on filters
 $query = "SELECT * FROM public.tbl_landuse_f WHERE 1=1";
 
+
+// agwer vakue enoty nahi hai tou zone baqi query kay sath concate ker do
 if (!empty($zone_code)) {
     $query .= " AND zone_code = :zone_code";
 }
+
+// agwer value empty nahi hai tou block/sheet ko baqi query kay sath concate ker do
 if (!empty($block)) {
     $query .= " AND sheet_no = :block";
 }
+// agwer value empty nahi hai tou category ko baqi query kay sath concate ker do
 if (!empty($category)) {
     $query .= " AND modification_type = :category";
 }
