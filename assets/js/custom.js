@@ -1,78 +1,25 @@
-// Code for add applicants handle form fields thorugh ajax //
-$(document).ready(function () {
-  // Handle district change
-  $("#district").change(function () {
-    var district_id = $(this).val();
-    $.ajax({
-      url: "add_applicants.php",
-      method: "POST",
-      data: {
-        action: "get_tehsils",
-        district_id: district_id,
-      },
-      success: function (response) {
-        $("#tehsil").html(response);
-        $("#circle").html('<option value="">Select Circle</option>'); // Reset circles and mozahs
-        $("#mozah").html('<option value="">Select Mozah</option>');
-        $("#applicant").html('<option value="">Select Applicant</option>');
-      },
-    });
-  });
+// Fetch blocks when zone is selected
+$('#zone-select').on('change', function() {
+  var zoneCode = $(this).val();
 
-  // Handle tehsil change
-  $("#tehsil").change(function () {
-    var tehsil_id = $(this).val();
-    $.ajax({
-      url: "add_applicants.php",
-      method: "POST",
-      data: {
-        action: "get_circles",
-        tehsil_id: tehsil_id,
-      },
-      success: function (response) {
-        $("#circle").html(response);
-        $("#mozah").html('<option value="">Select Mozah</option>'); // Reset mozahs
-        $("#applicant").html('<option value="">Select Applicant</option>');
-      },
-    });
-  });
+  // Clear block selection and reset to default "Select Block"
+  $('#block-select').html('<option selected>Select Block</option>');
 
-  // Handle circle change
-  $("#circle").change(function () {
-    var circle_id = $(this).val();
+  if (zoneCode) {
+    // Fetch blocks based on selected zone
     $.ajax({
-      url: "add_applicants.php",
-      method: "POST",
+      type: 'POST',
+      url: 'DAL/fetch_blocks.php',
       data: {
-        action: "get_mozahs",
-        circle_id: circle_id,
+        zone_code: zoneCode
       },
-      success: function (response) {
-        $("#mozah").html(response);
-        $("#applicant").html('<option value="">Select Applicant</option>');
+      success: function(response) {
+        // Append the fetched blocks while keeping "Select Block" as the default
+        $('#block-select').append(response);
       },
+      error: function() {
+        console.error('Error fetching blocks');
+      }
     });
-  });
-
-  // Handle mozah change
-  $("#mozah").change(function () {
-    $.ajax({
-      url: "add_applicants.php",
-      method: "POST",
-      data: {
-        action: "get_applicants",
-      },
-      success: function (response) {
-        $("#applicant").html(response);
-      },
-    });
-  });
+  }
 });
-////////////////////////////////
-
-/// select2 js ////
-$(document).ready(function() {
-    // Initialize select2 on all select elements
-    $('#district, #tehsil, #circle, #mozah, #applicant').select2();
-});
-///////////////////
