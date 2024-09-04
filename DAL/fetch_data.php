@@ -33,7 +33,7 @@ if ($filters) {
 }
 
 // Add pagination
-$query .= " ORDER BY zone_code LIMIT :length OFFSET :start";
+// $query .= " ORDER BY zone_code LIMIT :length OFFSET :start";
 
 // Prepare and execute the query
 $stmt = $pdo->prepare($query);
@@ -48,8 +48,8 @@ if ($block && $block !== 'Select Block') {
 if ($category && $category !== 'Select Category') {
     $stmt->bindValue(':category', $category);
 }
-$stmt->bindValue(':length', $length, PDO::PARAM_INT);
-$stmt->bindValue(':start', $start, PDO::PARAM_INT);
+// $stmt->bindValue(':length', $length, PDO::PARAM_INT);
+// $stmt->bindValue(':start', $start, PDO::PARAM_INT);
 
 $stmt->execute();
 $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
