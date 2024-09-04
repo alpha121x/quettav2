@@ -103,7 +103,7 @@ require "DAL/db_config.php";
           <!-- Data Table -->
           <div class="card">
             <div class="card-body">
-              <table id="table" class="display" style="width:100%">
+              <table id="table" class="table table-boderless" style="width:100%">
                 <thead>
                   <tr>
                     <th>#</th>
