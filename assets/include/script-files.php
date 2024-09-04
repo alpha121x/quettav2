@@ -16,9 +16,6 @@
 
   <!-- jquery data table js   -->
 <script src='assets/vendor/datatables/datatables.js'></script>
-    <script>
-    // new DataTable('#datatable');
-</script>
 <!-- SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 <!-- Include Select2 JS -->
@@ -36,7 +33,3 @@
 			});
 		});
 	</script>
-
-<script>
-    // new DataTable('.datatable');
-</script>

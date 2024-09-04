@@ -1,59 +1,89 @@
 <?php
-require "db_config.php";
+require 'db_config.php';
 
-// Get the request parameters from DataTables
-$draw = $_POST['draw'];
-$start = $_POST['start'];
-$length = $_POST['length'];
-$searchValue = $_POST['search']['value']; // Search value
+header('Content-Type: application/json');
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-// Fetch total records count without filtering
-$stmt = $pdo->query("SELECT COUNT(*) FROM public.tbl_landuse_f");
-$totalRecords = $stmt->fetchColumn();
+// Retrieve filter parameters and pagination info
+$zone_code = $_POST['zone_code'] ?? '';
+$block = $_POST['block'] ?? '';
+$category = $_POST['category'] ?? '';
+$start = (int)($_POST['start'] ?? 0);   // Pagination start (offset)
+$length = (int)($_POST['length'] ?? 10); // Number of records per page (limit)
 
-// Prepare the SQL query with search filtering
+// Base query
 $query = "SELECT parcel_id, zone_code, land_type, land_sub_type, modification_type, building_height, building_condition 
-          FROM public.tbl_landuse_f ORDER BY zone_code";
+          FROM public.tbl_landuse_f WHERE 1=1";
 
-// Add search condition if needed
-if (!empty($searchValue)) {
-    $query .= " WHERE zone_code LIKE :search OR land_type LIKE :search";
+// Add filters to query if they are valid
+$filters = [];
+if ($zone_code && $zone_code !== 'Select Zone') {
+    $filters[] = "zone_code = :zone_code";
+}
+if ($block && $block !== 'Select Block') {
+    $filters[] = "sheet_no = :block";
+}
+if ($category && $category !== 'Select Category') {
+    $filters[] = "modification_type = :category";
+}
+if ($filters) {
+    $query .= " AND " . implode(" AND ", $filters);
 }
 
-$query .= " LIMIT :limit OFFSET :offset";
+// Add pagination
+$query .= " ORDER BY zone_code LIMIT :length OFFSET :start";
 
+// Prepare and execute the query
 $stmt = $pdo->prepare($query);
 
-// Bind search parameter
-if (!empty($searchValue)) {
-    $stmt->bindValue(':search', '%' . $searchValue . '%', PDO::PARAM_STR);
+// Bind parameters
+if ($zone_code && $zone_code !== 'Select Zone') {
+    $stmt->bindValue(':zone_code', $zone_code);
 }
+if ($block && $block !== 'Select Block') {
+    $stmt->bindValue(':block', $block);
+}
+if ($category && $category !== 'Select Category') {
+    $stmt->bindValue(':category', $category);
+}
+$stmt->bindValue(':length', $length, PDO::PARAM_INT);
+$stmt->bindValue(':start', $start, PDO::PARAM_INT);
 
-// Bind limit and offset parameters
-$stmt->bindValue(':limit', (int)$length, PDO::PARAM_INT);
-$stmt->bindValue(':offset', (int)$start, PDO::PARAM_INT);
-
-// Execute the query
 $stmt->execute();
 $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Fetch the total number of records with filtering
-$recordsFiltered = $totalRecords;
-if (!empty($searchValue)) {
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM public.tbl_landuse_f WHERE zone_code LIKE :search OR land_type LIKE :search");
-    $stmt->bindValue(':search', '%' . $searchValue . '%', PDO::PARAM_STR);
-    $stmt->execute();
-    $recordsFiltered = $stmt->fetchColumn();
-}
+// Get total records count
+$totalRecordsStmt = $pdo->query("SELECT COUNT(*) FROM public.tbl_landuse_f");
+$totalRecords = $totalRecordsStmt->fetchColumn();
 
-// Prepare the JSON response
+// Get filtered records count
+$filteredQuery = "SELECT COUNT(*) FROM public.tbl_landuse_f WHERE 1=1";
+if ($filters) {
+    $filteredQuery .= " AND " . implode(" AND ", $filters);
+}
+$filteredRecordsStmt = $pdo->prepare($filteredQuery);
+if ($zone_code && $zone_code !== 'Select Zone') {
+    $filteredRecordsStmt->bindValue(':zone_code', $zone_code);
+}
+if ($block && $block !== 'Select Block') {
+    $filteredRecordsStmt->bindValue(':block', $block);
+}
+if ($category && $category !== 'Select Category') {
+    $filteredRecordsStmt->bindValue(':category', $category);
+}
+$filteredRecordsStmt->execute();
+$recordsFiltered = $filteredRecordsStmt->fetchColumn();
+
+// Prepare and output response
 $response = [
-    "draw" => intval($draw),
+    "draw" => intval($_POST['draw']),
     "recordsTotal" => intval($totalRecords),
     "recordsFiltered" => intval($recordsFiltered),
     "data" => $data
 ];
 
-// Send the JSON response
 echo json_encode($response);
+exit;
 ?>
