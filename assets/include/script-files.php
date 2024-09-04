@@ -1,20 +1,23 @@
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/chart.js/chart.umd.js"></script>
   <script src="assets/vendor/echarts/echarts.min.js"></script>
   <script src="assets/vendor/quill/quill.min.js"></script>
-  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+  <!-- <script src="assets/vendor/simple-datatables/simple-datatables.js"></script> -->
   <script src="assets/vendor/tinymce/tinymce.min.js"></script>
   <script src="assets/vendor/php-email-form/validate.js"></script>
   <script src="assets/js/main.js"></script>
   <script src="assets/js/custom.js"></script>
+  <!-- <script src="assets/vendor/datatables/datatables.min.js"></script> -->
+
+  <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.1.5/datatables.min.js"></script>
+
 
   <!-- jquery data table js   -->
-<script src='assets/jquery/datatable.js'></script>
-    <script src='assets/jquery/datatable.min.js'></script>
-    <script src='assets/jquery/datatable.bootstrap.js'></script>
+<script src='assets/vendor/datatables/datatables.js'></script>
     <script>
-    new DataTable('#datatable');
+    // new DataTable('#datatable');
 </script>
 <!-- SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
@@ -35,5 +38,5 @@
 	</script>
 
 <script>
-    new DataTable('.datatable');
+    // new DataTable('.datatable');
 </script>
