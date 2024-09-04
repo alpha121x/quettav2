@@ -138,87 +138,85 @@ require "./DAL/db_config.php";
 
   <!-- Default DataTable Script -->
   <script>
-  $(document).ready(function() {
-  // Initialize DataTable with default data (all records)
-  var table = $('#table').DataTable({
-    "processing": true,
-    "serverSide": true,
-    "pageLength": 10,
-    "ajax": {
-      "url": "DAL/fetch_filter_data.php", // Default data source
-      "type": "POST",
-      "dataSrc": "data"
-    },
-    "columns": [
-      {
-        "data": null, // No data for row number, handled in createdRow
-        "render": function (data, type, row, meta) {
-          return meta.row + 1; // Return row number (1-based index)
-        }
-      },
-      {
-        "data": "parcel_id"
-      },
-      {
-        "data": "zone_code"
-      },
-      {
-        "data": "land_type"
-      },
-      {
-        "data": "land_sub_type"
-      },
-      {
-        "data": "modification_type"
-      },
-      {
-        "data": "building_height"
-      },
-      {
-        "data": "building_condition"
-      }
-    ]
-  });
-
-  // Fetch blocks when zone is selected
-  $('#zone-select').on('change', function() {
-    var zoneCode = $(this).val();
-
-    // Clear block selection and reset to default "Select Block"
-    $('#block-select').html('<option selected>Select Block</option>');
-
-    if (zoneCode) {
-      // Fetch blocks based on selected zone
-      $.ajax({
-        type: 'POST',
-        url: 'DAL/fetch_blocks.php',
-        data: {
-          zone_code: zoneCode
+    $(document).ready(function() {
+      // Initialize DataTable with default data (all records)
+      var table = $('#table').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "pageLength": 10,
+        "ajax": {
+          "url": "DAL/fetch_filter_data.php", // Default data source
+          "type": "POST",
+          "dataSrc": "data"
         },
-        success: function(response) {
-          // Append the fetched blocks while keeping "Select Block" as the default
-          $('#block-select').append(response);
-        },
-        error: function() {
-          console.error('Error fetching blocks');
+        "columns": [{
+            "data": null, // No data for row number, handled in createdRow
+            "render": function(data, type, row, meta) {
+              return meta.row + 1; // Return row number (1-based index)
+            }
+          },
+          {
+            "data": "parcel_id"
+          },
+          {
+            "data": "zone_code"
+          },
+          {
+            "data": "land_type"
+          },
+          {
+            "data": "land_sub_type"
+          },
+          {
+            "data": "modification_type"
+          },
+          {
+            "data": "building_height"
+          },
+          {
+            "data": "building_condition"
+          }
+        ]
+      });
+
+      // Fetch blocks when zone is selected
+      $('#zone-select').on('change', function() {
+        var zoneCode = $(this).val();
+
+        // Clear block selection and reset to default "Select Block"
+        $('#block-select').html('<option selected>Select Block</option>');
+
+        if (zoneCode) {
+          // Fetch blocks based on selected zone
+          $.ajax({
+            type: 'POST',
+            url: 'DAL/fetch_blocks.php',
+            data: {
+              zone_code: zoneCode
+            },
+            success: function(response) {
+              // Append the fetched blocks while keeping "Select Block" as the default
+              $('#block-select').append(response);
+            },
+            error: function() {
+              console.error('Error fetching blocks');
+            }
+          });
         }
       });
-    }
-  });
 
-  // Apply filters and reload DataTable with filtered data
-  $('#search-btn').on('click', function() {
-    var zoneCode = $('#zone-select').val();
-    var block = $('#block-select').val();
-    var category = $('[aria-label="Select Category"]').val();
+      // Apply filters and reload DataTable with filtered data
+      $('#search-btn').on('click', function() {
+        var zoneCode = $('#zone-select').val();
+        var block = $('#block-select').val();
+        var category = $('[aria-label="Select Category"]').val();
 
-    console.log(zoneCode, block, category);
+        console.log(zoneCode, block, category);
 
-    // Reload DataTable with filtered data
-    table.ajax.url('DAL/fetch_filter_data.php?zone_code=' + encodeURIComponent(zoneCode) + '&block=' + encodeURIComponent(block) + '&category=' + encodeURIComponent(category)).load();
-  });
-});
-
+        // Reload DataTable with filtered data
+        table.ajax.url('DAL/fetch_filter_data.php?zone_code=' + encodeURIComponent(zoneCode) + '&block=' + encodeURIComponent(block) + '&category=' + encodeURIComponent(category)).load();
+      });
+    });
   </script>
 
 </body>
