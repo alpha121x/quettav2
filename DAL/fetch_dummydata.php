@@ -1,10 +1,6 @@
 <?php
 require "db_config.php";
 
-// "?z=%&b=%"   -- onlin
-// ""
-
-
 // Get the request parameters from DataTables
 $draw = $_POST['draw'];
 $start = $_POST['start'];
@@ -17,7 +13,7 @@ $totalRecords = $stmt->fetchColumn();
 
 // Prepare the SQL query with search filtering
 $query = "SELECT parcel_id, zone_code, land_type, land_sub_type, modification_type, building_height, building_condition 
-          FROM public.tbl_landuse_f";
+          FROM public.tbl_landuse_f ORDER BY zone_code";
 
 // Add search condition if needed
 if (!empty($searchValue)) {
