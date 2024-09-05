@@ -125,20 +125,20 @@ require "DAL/db_config.php";
 
               <!-- Modal -->
               <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered"> <!-- This centers the modal horizontally and vertically -->
+                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title" id="viewModalLabel">Parcel Details</h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="modalContent">
-                      <h1 class="text-success fw-bold">Parcel Content</h1>
                       <!-- Your content here -->
                     </div>
                   </div>
                 </div>
               </div>
               <!-- Modal end -->
+
 
 
             </div>

@@ -130,11 +130,11 @@ $("#table tbody").on("click", ".view-btn", function () {
       <div class="row mb-3">
           <div class="col-md-6">
             <label for="picture1" class="form-label text-success fw-bold">Picture 1</label>
-            <img src="${data.picture1}" class="img-fluid" width="60px" height="60px" id="picture1" alt="Picture 1">
+            <img src="${data.picture1}" class="building_img" id="picture1" alt="Picture 1">
           </div>
            <div class="col-md-6">
-            <label for="landType" class="form-label text-success fw-bold">Parcel Id</label>
-            <input type="text" class="form-control" id="landType" value="${data.parcel_id}" readonly>
+            <label for="picture1" class="form-label text-success fw-bold">Picture 2</label>
+            <img src="${data.picture2}" class="building_img"  id="picture1" alt="Picture 1">
           </div>
         </div>
             <div class="row mb-3">
