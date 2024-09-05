@@ -106,63 +106,71 @@ $("#table tbody").on("click", ".view-btn", function () {
 
   // console.log(parcelId);
 
-  
   // Fetch details for the selected parcel
   $.ajax({
     url: "DAL/fetch_parcel_details.php", // Endpoint to fetch parcel details
     type: "POST",
     data: { parcel_id: parcelId },
     success: function (response) {
-     
-
-      var data =  response;
+      var data = response;
       // console.log(response);
 
       // Set other fields as needed
       $("#modalContent").html(`
-          <div class="row mb-3">
+              <div class="row mb-3">
           <div class="col-md-6">
             <label for="zoneCode" class="form-label text-success fw-bold">Zone Code</label>
             <input type="text" class="form-control" id="zoneCode" value="${data.zone_code}" readonly>
           </div>
           <div class="col-md-6">
-            <label for="landType" class="form-label text-success fw-bold">Land Type</label>
-            <input type="text" class="form-control" id="landType" value="${data.land_type}" readonly>
+            <label for="landType" class="form-label text-success fw-bold">Block Code</label>
+            <input type="text" class="form-control" id="landType" value="${data.sheet_no}" readonly>
+          </div>
+        </div>
+      <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="picture1" class="form-label text-success fw-bold">Picture 1</label>
+            <img src="${data.picture1}" class="img-fluid" width="60px" height="60px" id="picture1" alt="Picture 1">
+          </div>
+           <div class="col-md-6">
+            <label for="landType" class="form-label text-success fw-bold">Parcel Id</label>
+            <input type="text" class="form-control" id="landType" value="${data.parcel_id}" readonly>
+          </div>
+        </div>
+            <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="buildingHeight" class="form-label text-success fw-bold">Land Type</label>
+            <input type="text" class="form-control" id="buildingHeight" value="${data.land_type}" readonly>
+          </div>
+          <div class="col-md-6">
+            <label for="buildingCondition" class="form-label text-success fw-bold">Land Sub Type</label>
+            <input type="text" class="form-control" id="buildingCondition" value="${data.land_sub_type}" readonly>
           </div>
         </div>
         <div class="row mb-3">
           <div class="col-md-6">
-            <label for="landSubType" class="form-label text-success fw-bold">Land Sub Type</label>
-            <input type="text" class="form-control" id="landSubType" value="${data.land_sub_type}" readonly>
+            <label for="buildingType" class="form-label text-success fw-bold">Modification Type</label>
+            <input type="text" class="form-control" id="buildingType" value="${data.modification_type}" readonly>
           </div>
-          <div class="col-md-6">
-            <label for="modificationType" class="form-label text-success fw-bold">Modification Type</label>
-            <input type="text" class="form-control" id="modificationType" value="${data.modification_type}" readonly>
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label for="buildingHeight" class="form-label text-success fw-bold">Building Height</label>
-            <input type="text" class="form-control" id="buildingHeight" value="${data.building_height}" readonly>
-          </div>
-          <div class="col-md-6">
-            <label for="buildingCondition" class="form-label text-success fw-bold">Building Condition</label>
-            <input type="text" class="form-control" id="buildingCondition" value="${data.building_condition}" readonly>
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-6">
+           <div class="col-md-6">
             <label for="buildingType" class="form-label text-success fw-bold">Building Type</label>
             <input type="text" class="form-control" id="buildingType" value="${data.building_type}" readonly>
           </div>
         </div>
-
+         <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="buildingType" class="form-label text-success fw-bold">Building Condtition</label>
+            <input type="text" class="form-control" id="buildingType" value="${data.building_condition}" readonly>
+          </div>
+           <div class="col-md-6">
+            <label for="buildingType" class="form-label text-success fw-bold">Building Height</label>
+            <input type="text" class="form-control" id="buildingType" value="${data.building_height}" readonly>
+          </div>
+        </div>
       `);
-
 
       // Open the modal and load content based on the parcelId
       $("#viewModal").modal("show");
-
     },
     error: function () {
       // Handle errors

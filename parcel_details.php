@@ -125,7 +125,7 @@ require "DAL/db_config.php";
 
               <!-- Modal -->
               <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable"> <!-- Add the centered and scrollable classes here -->
+                <div class="modal-dialog modal-lg modal-dialog-centered"> <!-- This centers the modal horizontally and vertically -->
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title" id="viewModalLabel">Parcel Details</h5>
@@ -133,7 +133,7 @@ require "DAL/db_config.php";
                     </div>
                     <div class="modal-body" id="modalContent">
                       <h1 class="text-success fw-bold">Parcel Content</h1>
-                      <!-- Add your content here. If it's too long, it will be scrollable -->
+                      <!-- Your content here -->
                     </div>
                   </div>
                 </div>
