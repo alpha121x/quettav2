@@ -120,30 +120,43 @@ $("#table tbody").on("click", ".view-btn", function () {
 
       // Set other fields as needed
       $("#modalContent").html(`
-        <div class="mb-3">
-          <label for="zoneCode" class="form-label text-success fw-bold">Zone Code</label>
-          <input type="text" class="form-control" id="zoneCode" value="${data.zone_code}" readonly>
+          <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="zoneCode" class="form-label text-success fw-bold">Zone Code</label>
+            <input type="text" class="form-control" id="zoneCode" value="${data.zone_code}" readonly>
+          </div>
+          <div class="col-md-6">
+            <label for="landType" class="form-label text-success fw-bold">Land Type</label>
+            <input type="text" class="form-control" id="landType" value="${data.land_type}" readonly>
+          </div>
         </div>
-        <div class="mb-3">
-          <label for="landType" class="form-label text-success fw-bold">Land Type</label>
-          <input type="text" class="form-control" id="landType" value="${data.land_type}" readonly>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="landSubType" class="form-label text-success fw-bold">Land Sub Type</label>
+            <input type="text" class="form-control" id="landSubType" value="${data.land_sub_type}" readonly>
+          </div>
+          <div class="col-md-6">
+            <label for="modificationType" class="form-label text-success fw-bold">Modification Type</label>
+            <input type="text" class="form-control" id="modificationType" value="${data.modification_type}" readonly>
+          </div>
         </div>
-        <div class="mb-3">
-          <label for="landSubType" class="form-label text-success fw-bold">Land Sub Type</label>
-          <input type="text" class="form-control" id="landSubType" value="${data.land_sub_type}" readonly>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="buildingHeight" class="form-label text-success fw-bold">Building Height</label>
+            <input type="text" class="form-control" id="buildingHeight" value="${data.building_height}" readonly>
+          </div>
+          <div class="col-md-6">
+            <label for="buildingCondition" class="form-label text-success fw-bold">Building Condition</label>
+            <input type="text" class="form-control" id="buildingCondition" value="${data.building_condition}" readonly>
+          </div>
         </div>
-        <div class="mb-3">
-          <label for="modificationType" class="form-label text-success fw-bold">Modification Type</label>
-          <input type="text" class="form-control" id="modificationType" value="${data.modification_type}" readonly>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="buildingType" class="form-label text-success fw-bold">Building Type</label>
+            <input type="text" class="form-control" id="buildingType" value="${data.building_type}" readonly>
+          </div>
         </div>
-        <div class="mb-3">
-          <label for="buildingHeight" class="form-label text-success fw-bold">Building Height</label>
-          <input type="text" class="form-control" id="buildingHeight" value="${data.building_height}" readonly>
-        </div>
-        <div class="mb-3">
-          <label for="buildingCondition" class="form-label text-success fw-bold">Building Condition</label>
-          <input type="text" class="form-control" id="buildingCondition" value="${data.building_condition}" readonly>
-        </div>
+
       `);
 
 
