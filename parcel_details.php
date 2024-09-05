@@ -115,12 +115,35 @@ require "DAL/db_config.php";
                     <th>Modification Type</th>
                     <th>Building Height</th>
                     <th>Building Condition</th>
+                    <th>Action</th> <!-- New Action column -->
                   </tr>
                 </thead>
                 <tbody>
                   <!-- Dynamic rows will be injected here by DataTables -->
                 </tbody>
               </table>
+
+              <!-- Modal -->
+              <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable"> <!-- Add the centered and scrollable classes here -->
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="viewModalLabel">Parcel Details</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="modalContent">
+                      <h1>Parcel Content</h1>
+                      <!-- Add your content here. If it's too long, it will be scrollable -->
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Modal end -->
+
+
             </div>
           </div>
         </div>
@@ -136,8 +159,6 @@ require "DAL/db_config.php";
 
   <!-- Scripts -->
   <?php include(__DIR__ . "/assets/include/script-files.php") ?>
-  
-
 
 
 </body>
