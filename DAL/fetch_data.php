@@ -37,7 +37,7 @@ if ($filters) {
 }
 
 // Add pagination
-$query .= " ORDER BY zone_code LIMIT :length OFFSET :start";
+$query .= " ORDER BY parcel_id LIMIT :length OFFSET :start";
 
 // Prepare and execute the query
 $stmt = $pdo->prepare($query);
