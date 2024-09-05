@@ -10,7 +10,7 @@ error_reporting(E_ALL);
 $parcelId = $_POST['parcel_id'];
 
 // Prepare and execute the query
-$sql = "SELECT zone_code, land_type, land_sub_type, modification_type, building_height, building_condition 
+$sql = "SELECT * 
         FROM public.tbl_landuse_f 
         WHERE parcel_id = :parcel_id"; // Corrected SQL query
 

@@ -120,12 +120,30 @@ $("#table tbody").on("click", ".view-btn", function () {
 
       // Set other fields as needed
       $("#modalContent").html(`
-        <p><strong>Zone Code:</strong> ${data.zone_code}</p>
-        <p><strong>Land Type:</strong> ${data.land_type}</p>
-        <p><strong>Land Sub Type:</strong> ${data.land_sub_type}</p>
-        <p><strong>Modification Type:</strong> ${data.modification_type}</p>
-        <p><strong>Building Height:</strong> ${data.building_height}</p>
-        <p><strong>Building Condition:</strong> ${data.building_condition}</p>
+        <div class="mb-3">
+          <label for="zoneCode" class="form-label text-success fw-bold">Zone Code</label>
+          <input type="text" class="form-control" id="zoneCode" value="${data.zone_code}" readonly>
+        </div>
+        <div class="mb-3">
+          <label for="landType" class="form-label text-success fw-bold">Land Type</label>
+          <input type="text" class="form-control" id="landType" value="${data.land_type}" readonly>
+        </div>
+        <div class="mb-3">
+          <label for="landSubType" class="form-label text-success fw-bold">Land Sub Type</label>
+          <input type="text" class="form-control" id="landSubType" value="${data.land_sub_type}" readonly>
+        </div>
+        <div class="mb-3">
+          <label for="modificationType" class="form-label text-success fw-bold">Modification Type</label>
+          <input type="text" class="form-control" id="modificationType" value="${data.modification_type}" readonly>
+        </div>
+        <div class="mb-3">
+          <label for="buildingHeight" class="form-label text-success fw-bold">Building Height</label>
+          <input type="text" class="form-control" id="buildingHeight" value="${data.building_height}" readonly>
+        </div>
+        <div class="mb-3">
+          <label for="buildingCondition" class="form-label text-success fw-bold">Building Condition</label>
+          <input type="text" class="form-control" id="buildingCondition" value="${data.building_condition}" readonly>
+        </div>
       `);
 
 

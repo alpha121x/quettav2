@@ -132,11 +132,8 @@ require "DAL/db_config.php";
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="modalContent">
-                      <h1>Parcel Content</h1>
+                      <h1 class="text-success fw-bold">Parcel Content</h1>
                       <!-- Add your content here. If it's too long, it will be scrollable -->
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                   </div>
                 </div>
