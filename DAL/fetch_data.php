@@ -10,6 +10,7 @@ error_reporting(E_ALL);
 $zone_code = $_POST['zone_code'] ?? '';
 $block = $_POST['block'] ?? '';
 $category = $_POST['category'] ?? '';
+$searchValue = $_POST['search']['value'] ?? '';  // Capture the search input from DataTables
 $start = (int)($_POST['start'] ?? 0);   // Pagination start
 $length = (int)($_POST['length'] ?? 10); // Number of records per page
 
@@ -27,6 +28,9 @@ if ($block && $block !== 'Select Block') {
 }
 if ($category && $category !== 'Select Category') {
     $filters[] = "modification_type = :category";
+}
+if ($searchValue) {
+    $filters[] = "parcel_id = :searchValue"; // Exact match on parcel_id
 }
 if ($filters) {
     $query .= " AND " . implode(" AND ", $filters);
@@ -48,11 +52,23 @@ if ($block && $block !== 'Select Block') {
 if ($category && $category !== 'Select Category') {
     $stmt->bindValue(':category', $category);
 }
+if ($searchValue) {
+    $stmt->bindValue(':searchValue', $searchValue); // Bind the exact search value without wildcards
+}
 $stmt->bindValue(':length', $length, PDO::PARAM_INT);
 $stmt->bindValue(':start', $start, PDO::PARAM_INT);
 
 $stmt->execute();
 $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// After fetching the data, check if it matches the search term
+foreach ($data as &$row) {
+    if ($searchValue && $row['parcel_id'] == $searchValue) {
+        $row['highlight'] = true; // Mark row for highlighting
+    } else {
+        $row['highlight'] = false; // Default
+    }
+}
 
 // Get total records count
 $totalRecordsStmt = $pdo->query("SELECT COUNT(*) FROM public.tbl_landuse_f");
@@ -73,6 +89,9 @@ if ($block && $block !== 'Select Block') {
 if ($category && $category !== 'Select Category') {
     $filteredRecordsStmt->bindValue(':category', $category);
 }
+if ($searchValue) {
+    $filteredRecordsStmt->bindValue(':searchValue', $searchValue);
+}
 $filteredRecordsStmt->execute();
 $recordsFiltered = $filteredRecordsStmt->fetchColumn();
 
@@ -87,4 +106,3 @@ $response = [
 echo json_encode($response);
 exit;
 ?>
-

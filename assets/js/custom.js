@@ -12,6 +12,11 @@
         d.category = $('[aria-label="Select Category"]').val();
       }
     },
+    language: {
+        search: '',
+        searchPlaceholder: "Search by parcel_id",
+        emptyTable: "Data Not Available"
+    },
     "columns": [
       {
         "data": null, // No data for row number, handled in createdRow
