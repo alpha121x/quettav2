@@ -175,73 +175,74 @@
           <div class="drawer-content">
             <button id="closeDrawerBtn" class="close-button">&times;</button>
             <h3>Filter Options</h3>
+            <!-- Zone Selection -->
+            <?php
+            try {
+              $stmt = $pdo->query("SELECT DISTINCT zone_code FROM public.tbl_landuse_f ORDER BY zone_code ASC");
+              $zones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } catch (PDOException $e) {
+              echo "Error: " . $e->getMessage();
+            }
+            ?>
             <div class="mb-3">
-              <label for="startDate" class="form-label">Start Date</label>
-              <input type="date" class="form-control" id="startDate" name="startDate">
+              <div class="form-group">
+                <select class="form-select" id="zone-select" aria-label="Select Zone">
+                  <option selected>Select Zone</option>
+                  <?php if (!empty($zones)): ?>
+                    <?php foreach ($zones as $zone): ?>
+                      <option value="<?= htmlspecialchars($zone['zone_code']); ?>">
+                        <?= htmlspecialchars($zone['zone_code']); ?>
+                      </option>
+                    <?php endforeach; ?>
+                  <?php else: ?>
+                    <option disabled>No Zones Available</option>
+                  <?php endif; ?>
+                </select>
+              </div>
             </div>
             <div class="mb-3">
-              <label for="endDate" class="form-label">End Date</label>
-              <input type="date" class="form-control" id="endDate" name="endDate">
+              <div class="form-group">
+                <select class="form-select" id="block-select" aria-label="Select Block">
+                  <option selected>Select Block</option>
+                  <!-- Blocks will be populated based on the selected zone -->
+                </select>
+              </div>
+
+              <?php
+              try {
+                $stmt = $pdo->query("SELECT DISTINCT modification_type FROM public.tbl_landuse_f ORDER BY modification_type ASC");
+                $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+              } catch (PDOException $e) {
+                echo "Error: " . $e->getMessage();
+              }
+              ?>
             </div>
 
-            <!-- Dropdown Filter Example -->
             <div class="mb-3">
-              <label for="category" class="form-label">Category</label>
-              <select class="form-select" id="category" name="category">
-                <option value="" selected>Select Category</option>
-                <option value="zone">Zone</option>
-                <option value="block">Block</option>
-                <option value="parcel">Parcel</option>
-              </select>
+              <div class="form-group">
+                <select class="form-select" aria-label="Select Category">
+                  <option selected>Select Category</option>
+                  <?php if (!empty($categories)): ?>
+                    <?php foreach ($categories as $category): ?>
+                      <option value="<?= htmlspecialchars($category['modification_type']); ?>">
+                        <?= htmlspecialchars($category['modification_type']); ?>
+                      </option>
+                    <?php endforeach; ?>
+                  <?php else: ?>
+                    <option disabled>No Categories Available</option>
+                  <?php endif; ?>
+                </select>
+              </div>
             </div>
-
-            <!-- Checkbox Filter Example -->
-            <div class="form-check mb-3">
-              <input class="form-check-input" type="checkbox" id="completedBlocks" name="completedBlocks">
-              <label class="form-check-label" for="completedBlocks">
-                Show Completed Blocks Only
-              </label>
-            </div>
-
-            <!-- Another Filter Option -->
-            <div class="mb-3">
-              <label for="status" class="form-label">Status</label>
-              <select class="form-select" id="status" name="status">
-                <option value="" selected>Select Status</option>
-                <option value="surveyed">Surveyed</option>
-                <option value="remaining">Remaining</option>
-              </select>
-            </div>
-            </form>
           </div>
           <!-- Add more filter options as needed -->
           <button id="applyFiltersBtn" class="apply-button">Apply Filters</button>
         </div>
+        </form>
       </div>
     </div>
 
-    <script>
-      // Get elements
-      const openDrawerBtn = document.getElementById('openDrawerBtn');
-      const filterDrawer = document.getElementById('filterDrawer');
-      const closeDrawerBtn = document.getElementById('closeDrawerBtn');
-
-      // Open drawer
-      openDrawerBtn.addEventListener('click', () => {
-        filterDrawer.classList.add('drawer-active');
-        openDrawerBtn.style.display = 'none'; // Hide the open button
-      });
-
-      // Close drawer
-      closeDrawerBtn.addEventListener('click', () => {
-        filterDrawer.classList.remove('drawer-active');
-        setTimeout(() => {
-          openDrawerBtn.style.display = 'block'; // Show the open button after drawer closes
-        }, 300); // Adjust this timeout to match the CSS transition duration
-      });
-    </script>
-
-
+  
     <div class="col-lg-12">
       <div class="row">
 
@@ -525,3 +526,24 @@
     </div>
   </section>
 </main><!-- End #main -->
+
+<script>
+      // Get elements
+      const openDrawerBtn = document.getElementById('openDrawerBtn');
+      const filterDrawer = document.getElementById('filterDrawer');
+      const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+
+      // Open drawer
+      openDrawerBtn.addEventListener('click', () => {
+        filterDrawer.classList.add('drawer-active');
+        openDrawerBtn.style.display = 'none'; // Hide the open button
+      });
+
+      // Close drawer
+      closeDrawerBtn.addEventListener('click', () => {
+        filterDrawer.classList.remove('drawer-active');
+        setTimeout(() => {
+          openDrawerBtn.style.display = 'block'; // Show the open button after drawer closes
+        }, 300); // Adjust this timeout to match the CSS transition duration
+      });
+    </script>
