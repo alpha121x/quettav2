@@ -330,7 +330,7 @@
         <div class="col-lg-4">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Mapst</h5>
+              <h5 class="card-title">Map</h5>
 
               <div id="map" class="contact-map">
                 <iframe
