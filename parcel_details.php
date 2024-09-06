@@ -26,8 +26,8 @@ require "DAL/db_config.php";
 
     <style>
       .building_img {
-        width: 320px !important;
-        height: 200px !important;
+        width: 150px !important;
+        height: 100px !important;
       }
     </style>
 

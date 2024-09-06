@@ -2,6 +2,7 @@
 var table = $("#table").DataTable({
   processing: true,
   serverSide: true,
+  responsive: true,
   ajax: {
     url: "DAL/fetch_data.php", // Server-side data source
     type: "POST",
@@ -117,56 +118,86 @@ $("#table tbody").on("click", ".view-btn", function () {
 
       // Set other fields as needed
       $("#modalContent").html(`
-              <div class="row mb-3">
-          <div class="col-md-6">
-            <label for="zoneCode" class="form-label text-success fw-bold">Zone Code</label>
-            <input type="text" class="form-control" id="zoneCode" value="${data.zone_code}" readonly>
-          </div>
-          <div class="col-md-6">
-            <label for="landType" class="form-label text-success fw-bold">Block Code</label>
-            <input type="text" class="form-control" id="landType" value="${data.sheet_no}" readonly>
-          </div>
-        </div>
-      <div class="row mb-3">
-          <div class="col-md-6">
-            <label for="picture1" class="form-label text-success fw-bold">Picture 1</label>
-            <img src="${data.picture1}" class="building_img" id="picture1" alt="Picture 1">
-          </div>
-           <div class="col-md-6">
-            <label for="picture1" class="form-label text-success fw-bold">Picture 2</label>
-            <img src="${data.picture2}" class="building_img"  id="picture1" alt="Picture 1">
-          </div>
-        </div>
-            <div class="row mb-3">
-          <div class="col-md-6">
-            <label for="buildingHeight" class="form-label text-success fw-bold">Land Type</label>
-            <input type="text" class="form-control" id="buildingHeight" value="${data.land_type}" readonly>
-          </div>
-          <div class="col-md-6">
-            <label for="buildingCondition" class="form-label text-success fw-bold">Land Sub Type</label>
-            <input type="text" class="form-control" id="buildingCondition" value="${data.land_sub_type}" readonly>
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label for="buildingType" class="form-label text-success fw-bold">Modification Type</label>
-            <input type="text" class="form-control" id="buildingType" value="${data.modification_type}" readonly>
-          </div>
-           <div class="col-md-6">
-            <label for="buildingType" class="form-label text-success fw-bold">Building Type</label>
-            <input type="text" class="form-control" id="buildingType" value="${data.building_type}" readonly>
-          </div>
-        </div>
-         <div class="row mb-3">
-          <div class="col-md-6">
-            <label for="buildingType" class="form-label text-success fw-bold">Building Condtition</label>
-            <input type="text" class="form-control" id="buildingType" value="${data.building_condition}" readonly>
-          </div>
-           <div class="col-md-6">
-            <label for="buildingType" class="form-label text-success fw-bold">Building Height</label>
-            <input type="text" class="form-control" id="buildingType" value="${data.building_height}" readonly>
-          </div>
-        </div>
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <td class="text-success fw-bold">Zone Code</td>
+              <td>${data.zone_code}</td>
+              <td class="text-success fw-bold">Block Code</td>
+              <td>${data.sheet_no}</td>
+            </tr>
+            <tr>
+              <td class="text-success fw-bold">Parcel ID</td>
+              <td>${data.parcel_id}</td>
+              <td class="text-success fw-bold">Modification Type</td>
+              <td>${data.modification_type}</td>
+            </tr>
+            <tr>
+              <td class="text-success fw-bold">Land Type</td>
+              <td>${data.land_type}</td>
+              <td class="text-success fw-bold">Land Sub Type</td>
+              <td>${data.land_sub_type}</td>
+            </tr>
+            <tr>
+              <td class="text-success fw-bold">Building Condition</td>
+              <td>${data.building_condition}</td>
+              <td class="text-success fw-bold">Building Height</td>
+              <td>${data.building_height}</td>
+            </tr>
+            <tr>
+              <td class="text-success fw-bold">Building Type</td>
+              <td>${data.building_type}</td>
+              <td class="text-success fw-bold">Username</td>
+              <td>${data.username}</td>
+            </tr>
+            <tr>
+              <td class="text-success fw-bold">Survey Date</td>
+              <td>${data.survey_date_time}</td>
+              <td class="text-success fw-bold">DB Date</td>
+              <td>${data.db_date_time}</td>
+            </tr>
+            <tr>
+              <td class="text-success fw-bold">Merge ID</td>
+              <td>${data.merge_id}</td>
+              <td class="text-success fw-bold">Land ID</td>
+              <td>${data.land_id}</td>
+            </tr>
+            <tr>
+              <td class="text-success fw-bold">Symbol</td>
+              <td>${data.symbol}</td>
+              <td class="text-success fw-bold">Remarks</td>
+              <td>${data.remarks}</td>
+            </tr>
+            <tr>
+              <td class="text-success fw-bold">QA By</td>
+              <td>${data.qa_by_uu}</td>
+              <td class="text-success fw-bold">QA Remarks</td>
+              <td>${data.qa_remarks}</td>
+            </tr>
+            <tr>
+              <td class="text-success fw-bold">App Version</td>
+              <td>${data.app_version}</td>
+              <td class="text-success fw-bold">Survey Date QA</td>
+              <td>${data.survey_date_time_qa}</td>
+            </tr>
+            <tr>
+              <td class="text-success fw-bold">QA Latitude</td>
+              <td>${data.qa_lat}</td>
+              <td class="text-success fw-bold">QA Longitude</td>
+              <td>${data.qa_lng}</td>
+            </tr>
+            <tr>
+            <td class="text-success fw-bold">Picture 1</td>
+            <td>
+              <img src="${data.picture1}" class="building_img" id="picture1" alt="Picture 1">
+            </td>
+            <td class="text-success fw-bold">Picture 2</td>
+            <td>
+              <img src="${data.picture2}" class="building_img" id="picture2" alt="Picture 2">
+            </td>
+          </tr>
+          </tbody>
+        </table>
       `);
 
       // Open the modal and load content based on the parcelId
