@@ -24,6 +24,15 @@ require "DAL/db_config.php";
       </nav>
     </div><!-- End Page Title -->
 
+    <style>
+
+      .building_img {
+        max-width: 250px;
+        height: 150px;
+      }
+
+    </style>
+
 
     <section class="section">
       <div class="row">
