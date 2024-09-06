@@ -98,3 +98,83 @@ $("#zone-select").on("change", function () {
 $("#search-btn").on("click", function () {
   table.ajax.reload(); // Reload table data based on current filters
 });
+
+// Event listener for the "View" button
+// Event listener for the "View" button
+$("#table tbody").on("click", ".view-btn", function () {
+  var parcelId = $(this).data("id");
+
+  // console.log(parcelId);
+
+  // Fetch details for the selected parcel
+  $.ajax({
+    url: "DAL/fetch_parcel_details.php", // Endpoint to fetch parcel details
+    type: "POST",
+    data: { parcel_id: parcelId },
+    success: function (response) {
+      var data = response;
+      // console.log(response);
+
+      // Set other fields as needed
+      $("#modalContent").html(`
+              <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="zoneCode" class="form-label text-success fw-bold">Zone Code</label>
+            <input type="text" class="form-control" id="zoneCode" value="${data.zone_code}" readonly>
+          </div>
+          <div class="col-md-6">
+            <label for="landType" class="form-label text-success fw-bold">Block Code</label>
+            <input type="text" class="form-control" id="landType" value="${data.sheet_no}" readonly>
+          </div>
+        </div>
+      <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="picture1" class="form-label text-success fw-bold">Picture 1</label>
+            <img src="${data.picture1}" class="building_img" id="picture1" alt="Picture 1">
+          </div>
+           <div class="col-md-6">
+            <label for="picture1" class="form-label text-success fw-bold">Picture 2</label>
+            <img src="${data.picture2}" class="building_img"  id="picture1" alt="Picture 1">
+          </div>
+        </div>
+            <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="buildingHeight" class="form-label text-success fw-bold">Land Type</label>
+            <input type="text" class="form-control" id="buildingHeight" value="${data.land_type}" readonly>
+          </div>
+          <div class="col-md-6">
+            <label for="buildingCondition" class="form-label text-success fw-bold">Land Sub Type</label>
+            <input type="text" class="form-control" id="buildingCondition" value="${data.land_sub_type}" readonly>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="buildingType" class="form-label text-success fw-bold">Modification Type</label>
+            <input type="text" class="form-control" id="buildingType" value="${data.modification_type}" readonly>
+          </div>
+           <div class="col-md-6">
+            <label for="buildingType" class="form-label text-success fw-bold">Building Type</label>
+            <input type="text" class="form-control" id="buildingType" value="${data.building_type}" readonly>
+          </div>
+        </div>
+         <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="buildingType" class="form-label text-success fw-bold">Building Condtition</label>
+            <input type="text" class="form-control" id="buildingType" value="${data.building_condition}" readonly>
+          </div>
+           <div class="col-md-6">
+            <label for="buildingType" class="form-label text-success fw-bold">Building Height</label>
+            <input type="text" class="form-control" id="buildingType" value="${data.building_height}" readonly>
+          </div>
+        </div>
+      `);
+
+      // Open the modal and load content based on the parcelId
+      $("#viewModal").modal("show");
+    },
+    error: function () {
+      // Handle errors
+      $("#modalContent").html("<p>Error fetching details.</p>");
+    },
+  });
+});
