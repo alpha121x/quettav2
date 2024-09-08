@@ -164,5 +164,4 @@ require "DAL/db_config.php";
   <!-- Scripts -->
   <?php include(__DIR__ . "/assets/include/script-files.php") ?>
 
-
 </body>
