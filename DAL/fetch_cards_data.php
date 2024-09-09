@@ -101,7 +101,7 @@ try {
     $response['totalBlocks'] = getDistinctCount($pdo, "sheet_no", "tbl_landuse_f", $zone_code, $sheet_no, $land_type, $land_sub_type);
 
     // Total Parcels
-    $response['totalParcels'] = getCount($pdo, "parcel_id", "tbl_landuse_f", null, $zone_code, $sheet_no, $land_type, $land_sub_type);
+    $response['totalParcels'] = getDistinctCount($pdo, "parcel_id", "tbl_landuse_f", $zone_code, $sheet_no, $land_type, $land_sub_type);
 
     // Merge Parcels
     $response['mergeParcels'] = getCount($pdo, "*", "tbl_landuse_f", "MERGE", $zone_code, $sheet_no, $land_type, $land_sub_type);
