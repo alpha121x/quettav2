@@ -438,8 +438,8 @@
             <div class="card-body">
               <h5 class="card-title">Land Types Chart</h5>
 
-              <!-- Bar Chart -->
-              <div id="barChart"></div>
+              <!-- Line Chart -->
+              <div id="lineChart"></div>
               <?php
               // Include database configuration file
               include("./DAL/db_config.php");
@@ -447,13 +447,13 @@
               try {
                 // Query to get the count of each land type
                 $stmt = $pdo->prepare("
-            SELECT 
-                land_type,
-                COUNT(*) AS land_count
-            FROM public.tbl_landuse_f 
-            GROUP BY land_type
-            ORDER BY land_count DESC
-        ");
+                            SELECT 
+                                land_type,
+                                COUNT(*) AS land_count
+                            FROM public.tbl_landuse_f 
+                            GROUP BY land_type
+                            ORDER BY land_count DESC
+                        ");
                 $stmt->execute();
                 $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -470,42 +470,58 @@
               }
               ?>
 
-
               <script>
-                document.addEventListener('DOMContentLoaded', () => {
+                document.addEventListener("DOMContentLoaded", () => {
                   // PHP variables injected directly into JavaScript
                   var landTypes = <?php echo json_encode($landTypes); ?>;
                   var landCounts = <?php echo json_encode($landCounts); ?>;
 
                   // Initialize chart with fetched data
-                  new ApexCharts(document.querySelector('#barChart'), {
+                  new ApexCharts(document.querySelector("#lineChart"), {
                     series: [{
-                      name: 'Land Count',
+                      name: "Land Count",
                       data: landCounts
                     }],
                     chart: {
-                      type: 'bar',
-                      height: 350
-                    },
-                    plotOptions: {
-                      bar: {
-                        borderRadius: 4,
-                        horizontal: true
+                      height: 350,
+                      type: 'line',
+                      zoom: {
+                        enabled: false
                       }
                     },
                     dataLabels: {
-                      enabled: false,
-                      formatter: function(val) {
-                        return val;
-                      }
+                      enabled: false
+                    },
+                    stroke: {
+                      curve: 'smooth' // Smooth curve for the line
+                    },
+                    grid: {
+                      row: {
+                        colors: ['#f3f3f3', 'transparent'], // Alternating row colors
+                        opacity: 0.5
+                      },
                     },
                     xaxis: {
-                      categories: landTypes
+                      categories: landTypes,
+                      title: {
+                        text: 'Land Types'
+                      }
+                    },
+                    yaxis: {
+                      title: {
+                        text: 'Land Count'
+                      },
+                      tickAmount: 5, // Number of ticks to show
+                      labels: {
+                        formatter: function(value) {
+                          return value.toFixed(0); // Display integer values
+                        }
+                      }
                     }
                   }).render();
                 });
               </script>
-              <!-- End Bar Chart -->
+              <!-- End Line Chart -->
 
             </div>
           </div>
