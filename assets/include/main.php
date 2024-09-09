@@ -291,7 +291,7 @@
                             show: false
                           }
                         },
-                        colors: ['#4154f1'],
+                        colors: ['#28A745'],
                         fill: {
                           type: "solid"
                         },
