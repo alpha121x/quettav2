@@ -111,7 +111,7 @@
 
   try {
     // Query to get the total parcels count
-    $stmt = $pdo->prepare("SELECT COUNT(*) AS total_parcels FROM public.tbl_landuse_f");
+    $stmt = $pdo->prepare("SELECT COUNT(parcel_id) AS total_parcels FROM public.tbl_landuse_f");
     $stmt->execute();
     $totalParcelsResult = $stmt->fetch(PDO::FETCH_ASSOC);
     $totalParcels = $totalParcelsResult['total_parcels'];
