@@ -357,43 +357,6 @@
               <!-- Pie Chart -->
               <div id="pieChart"></div>
 
-              <?php
-              // Include database configuration file
-              include("./DAL/db_config.php");
-
-              try {
-                // Query to get counts for each zone
-                $stmt = $pdo->prepare("
-        SELECT 
-            zone_code, 
-            COUNT(*) AS parcel_count 
-        FROM public.tbl_landuse_f 
-        GROUP BY zone_code
-    ");
-                $stmt->execute();
-                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                // Calculate total parcels
-                $totalParcels = array_sum(array_column($data, 'parcel_count'));
-
-                // Prepare data for the chart
-                $percentages = [];
-                $labels = [];
-                foreach ($data as $row) {
-                  $percentages[] = round(($row['parcel_count'] / $totalParcels) * 100, 2);
-                  $labels[] = 'Zone ' . $row['zone_code']; // Adding 'Zone ' prefix
-                }
-
-                // Pass the data to JavaScript
-                echo "<script>
-            var parcelPercentages = " . json_encode($percentages) . ";
-            var zoneLabels = " . json_encode($labels) . ";
-          </script>";
-              } catch (PDOException $e) {
-                echo "Error: " . $e->getMessage();
-              }
-              ?>
-
               <script>
                 document.addEventListener("DOMContentLoaded", () => {
                   // Initialize the chart with the PHP-generated data
@@ -435,36 +398,7 @@
 
               <!-- Line Chart -->
               <div id="lineChart"></div>
-              <?php
-              // Include database configuration file
-              include("./DAL/db_config.php");
-
-              try {
-                // Query to get the count of each land type
-                $stmt = $pdo->prepare("
-                            SELECT 
-                                land_type,
-                                COUNT(*) AS land_count
-                            FROM public.tbl_landuse_f 
-                            GROUP BY land_type
-                            ORDER BY land_count DESC
-                        ");
-                $stmt->execute();
-                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                // Initialize arrays to hold the data
-                $landTypes = [];
-                $landCounts = [];
-
-                foreach ($data as $row) {
-                  $landTypes[] = $row['land_type'];
-                  $landCounts[] = (int)$row['land_count'];
-                }
-              } catch (PDOException $e) {
-                echo "<p>Error: " . $e->getMessage() . "</p>";
-              }
-              ?>
-
+              
               <script>
                 document.addEventListener("DOMContentLoaded", () => {
                   // PHP variables injected directly into JavaScript
@@ -529,80 +463,6 @@
 
               <!-- Column Chart -->
               <div id="columnChart"></div>
-
-              <?php
-              // Include database configuration file
-              include("./DAL/db_config.php");
-
-              try {
-                // Query to get the count of modified parcels in each zone, categorized by modification type
-                $stmt = $pdo->prepare("
-        SELECT 
-            zone_code,
-            modification_type,
-            COUNT(*) AS modification_count
-        FROM public.tbl_landuse_f 
-        GROUP BY zone_code, modification_type
-        ORDER BY zone_code, modification_type
-    ");
-                $stmt->execute();
-                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                // Initialize arrays to hold the data
-                $zones = [];
-                $modificationCounts = []; // To store counts per zone
-
-                // Initialize modification types for each zone
-                foreach ($data as $row) {
-                  $zoneCode = $row['zone_code'];
-                  $modificationType = trim($row['modification_type']); // Trim whitespace
-                  $modificationType = ucfirst(strtolower($modificationType)); // Standardize case
-
-                  if (!in_array($zoneCode, $zones)) {
-                    $zones[] = $zoneCode; // Store unique zone codes
-                    $modificationCounts[$zoneCode] = [
-                      'Merge' => 0,
-                      'Same' => 0,
-                      'Split' => 0
-                    ];
-                  }
-
-                  if (array_key_exists($modificationType, $modificationCounts[$zoneCode])) {
-                    $modificationCounts[$zoneCode][$modificationType] = (int)$row['modification_count'];
-                  } else {
-                    // Show unexpected modification types
-                    echo "Unexpected modification type: " . htmlspecialchars($modificationType) . "<br>";
-                  }
-                }
-
-
-                // Now extract the counts for each modification type into separate arrays
-                $mergeCounts = [];
-                $sameCounts = [];
-                $splitCounts = [];
-
-                foreach ($zones as $zone) {
-                  $mergeCounts[] = isset($modificationCounts[$zone]['Merge']) ? $modificationCounts[$zone]['Merge'] : 0;
-                  $sameCounts[] = isset($modificationCounts[$zone]['Same']) ? $modificationCounts[$zone]['Same'] : 0;
-                  $splitCounts[] = isset($modificationCounts[$zone]['Split']) ? $modificationCounts[$zone]['Split'] : 0;
-                }
-
-                // Prefix zones with "Zone" label and pass data to JavaScript
-                $zoneLabels = array_map(fn($zone) => "Zone " . $zone, $zones);
-
-                // Output JSON data directly to debug
-                echo "<script>
-        var zones = " . json_encode($zoneLabels) . ";
-        var mergeCounts = " . json_encode($mergeCounts) . ";
-        var sameCounts = " . json_encode($sameCounts) . ";
-        var splitCounts = " . json_encode($splitCounts) . ";
-    </script>";
-              } catch (PDOException $e) {
-                echo "Error: " . $e->getMessage();
-              }
-              ?>
-
-
 
               <script>
                 document.addEventListener("DOMContentLoaded", () => {
