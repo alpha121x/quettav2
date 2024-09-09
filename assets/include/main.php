@@ -689,22 +689,71 @@
 </main><!-- End #main -->
 
 <script>
-  // Get elements
-  const openDrawerBtn = document.getElementById('openDrawerBtn');
-  const filterDrawer = document.getElementById('filterDrawer');
-  const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+ // Get elements
+const openDrawerBtn = document.getElementById('openDrawerBtn');
+const filterDrawer = document.getElementById('filterDrawer');
+const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+const applyFiltersBtn = document.getElementById('applyFiltersBtn');
 
-  // Open drawer
-  openDrawerBtn.addEventListener('click', () => {
-    filterDrawer.classList.add('drawer-active');
-    openDrawerBtn.style.display = 'none'; // Hide the open button
-  });
+// Open drawer
+openDrawerBtn.addEventListener('click', () => {
+  filterDrawer.classList.add('drawer-active');
+  openDrawerBtn.style.display = 'none'; // Hide the open button
+});
 
-  // Close drawer
-  closeDrawerBtn.addEventListener('click', () => {
-    filterDrawer.classList.remove('drawer-active');
-    setTimeout(() => {
-      openDrawerBtn.style.display = 'block'; // Show the open button after drawer closes
-    }, 300); // Adjust this timeout to match the CSS transition duration
+// Close drawer
+closeDrawerBtn.addEventListener('click', () => {
+  filterDrawer.classList.remove('drawer-active');
+  setTimeout(() => {
+    openDrawerBtn.style.display = 'block'; // Show the open button after drawer closes
+  }, 300); // Adjust this timeout to match the CSS transition duration
+});
+
+// Apply filters
+applyFiltersBtn.addEventListener('click', () => {
+  // Get selected values
+  const zoneCode = document.getElementById('zone-select').value;
+  const block = document.getElementById('block-select').value;
+  const category = document.querySelector('[aria-label="Select Category"]').value;
+  const landType = document.querySelector('[aria-label="Select Land Type"]').value;
+  const landSubType = document.querySelector('[aria-label="Select Land Sub Type"]').value;
+
+  // Send AJAX request with the selected filter values
+  $.ajax({
+    url: './DAL/fetch_cards_data.php',
+    method: 'POST',
+    dataType: 'json',
+    data: {
+      zone_code: zoneCode,
+      sheet_no: block,
+      modification_type: category,
+      land_type: landType,
+      land_sub_type: landSubType
+    },
+    success: function(data) {
+      // Check for errors
+      if (data.error) {
+        console.error(data.error);
+      } else {
+        // Update card values
+        $('#total-zones').text(data.totalZones);
+        $('#total-blocks').text(data.totalBlocks);
+        $('#total-parcels').text(data.totalParcels);
+        $('#merge-parcels').text(data.mergeParcels);
+        $('#same-parcels').text(data.sameParcels);
+        $('#split-parcels').text(data.splitParcels);
+      }
+
+      // Close the drawer after applying filters
+      filterDrawer.classList.remove('drawer-active');
+      setTimeout(() => {
+        openDrawerBtn.style.display = 'block'; // Show the open button after drawer closes
+      }, 300);
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.error('AJAX Error: ' + textStatus);
+    }
   });
+});
+
 </script>
