@@ -1,71 +1,44 @@
 <?php
-  // Include the database configuration file
-  require "./DAL/db_config.php";
+require "db_config.php";
 
-  try {
-    // Prepare the PDO queries
-    $totalZonesQuery = "SELECT COUNT(DISTINCT zone_code) FROM tbl_landuse_f";
-    $totalBlocksQuery = "SELECT COUNT(DISTINCT sheet_no) FROM tbl_landuse_f";
-    $totalParcelsQuery = "SELECT COUNT(DISTINCT parcel_id) FROM tbl_landuse_f";
+// Initialize an array to hold the counts
+$response = [];
 
-    // Execute the queries and fetch the counts using PDO
-    $stmtZones = $pdo->prepare($totalZonesQuery);
-    $stmtZones->execute();
-    $totalZones = $stmtZones->fetchColumn();
-
-    $stmtBlocks = $pdo->prepare($totalBlocksQuery);
-    $stmtBlocks->execute();
-    $totalBlocks = $stmtBlocks->fetchColumn();
-
-    $stmtParcels = $pdo->prepare($totalParcelsQuery);
-    $stmtParcels->execute();
-    $totalParcels = $stmtParcels->fetchColumn();
-  } catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
-  }
-  ?>
-
-  <?php
-  // Include database configuration file
-  include("./DAL/db_config.php");
-
-  try {
-    // Query to get the total parcels count
-    $stmt = $pdo->prepare("SELECT COUNT(parcel_id) AS total_parcels FROM public.tbl_landuse_f");
+try {
+    // Total Zones
+    $stmt = $pdo->prepare("SELECT COUNT(DISTINCT zone_code) AS total_zones FROM tbl_landuse_f");
     $stmt->execute();
-    $totalParcelsResult = $stmt->fetch(PDO::FETCH_ASSOC);
-    $totalParcels = $totalParcelsResult['total_parcels'];
+    $response['totalZones'] = $stmt->fetchColumn();
 
-    // Query to get the count of merged parcels
-    $stmt = $pdo->prepare("
-        SELECT COUNT(*) AS merge_parcels
-        FROM public.tbl_landuse_f
-        WHERE modification_type = 'MERGE'
-    ");
+    // Total Blocks
+    $stmt = $pdo->prepare("SELECT COUNT(DISTINCT sheet_no) AS total_blocks FROM tbl_landuse_f");
     $stmt->execute();
-    $mergeParcelsResult = $stmt->fetch(PDO::FETCH_ASSOC);
-    $mergeParcels = $mergeParcelsResult['merge_parcels'];
+    $response['totalBlocks'] = $stmt->fetchColumn();
 
-    // Query to get the count of same parcels
-    $stmt = $pdo->prepare("
-        SELECT COUNT(*) AS same_parcels
-        FROM public.tbl_landuse_f
-        WHERE modification_type = 'SAME'
-    ");
+    // Total Parcels
+    $stmt = $pdo->prepare("SELECT COUNT(parcel_id) AS total_parcels FROM tbl_landuse_f");
     $stmt->execute();
-    $sameParcelsResult = $stmt->fetch(PDO::FETCH_ASSOC);
-    $sameParcels = $sameParcelsResult['same_parcels'];
+    $response['totalParcels'] = $stmt->fetchColumn();
 
-    // Query to get the count of split parcels
-    $stmt = $pdo->prepare("
-        SELECT COUNT(*) AS split_parcels
-        FROM public.tbl_landuse_f
-        WHERE modification_type = 'SPLIT'
-    ");
+    // Merge Parcels
+    $stmt = $pdo->prepare("SELECT COUNT(*) AS merge_parcels FROM public.tbl_landuse_f WHERE modification_type = 'MERGE'");
     $stmt->execute();
-    $splitParcelsResult = $stmt->fetch(PDO::FETCH_ASSOC);
-    $splitParcels = $splitParcelsResult['split_parcels'];
-  } catch (PDOException $e) {
-    echo "<p>Error: " . $e->getMessage() . "</p>";
-  }
-  ?>
+    $response['mergeParcels'] = $stmt->fetchColumn();
+
+    // Same Parcels
+    $stmt = $pdo->prepare("SELECT COUNT(*) AS same_parcels FROM public.tbl_landuse_f WHERE modification_type = 'SAME'");
+    $stmt->execute();
+    $response['sameParcels'] = $stmt->fetchColumn();
+
+    // Split Parcels
+    $stmt = $pdo->prepare("SELECT COUNT(*) AS split_parcels FROM public.tbl_landuse_f WHERE modification_type = 'SPLIT'");
+    $stmt->execute();
+    $response['splitParcels'] = $stmt->fetchColumn();
+
+    // Return the response as JSON
+    echo json_encode($response);
+
+} catch (PDOException $e) {
+    echo json_encode(['error' => $e->getMessage()]);
+}
+?>

@@ -78,9 +78,6 @@
     }
   </style>
 
-
-  <?php require "./DAL/fetch_cards_data.php" ?>
-
   <section class="section dashboard">
     <div class="row">
 
