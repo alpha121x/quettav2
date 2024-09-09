@@ -1,3 +1,4 @@
+<?php include "./DAL/fetch_chart_data.php" ?>
 <main id="main" class="main">
 
   <div class="pagetitle">
@@ -274,57 +275,47 @@
 
               <script>
                 document.addEventListener("DOMContentLoaded", () => {
-                  // Fetch data from the PHP script
-                  fetch('DAl/fetch_chart_data.php')
-                    .then(response => response.json())
-                    .then(data => {
-                      // Prepare data for the chart
-                      const categories = data.map(item => item.modification_type);
-                      const seriesData = data.map(item => parseInt(item.count));
-
-                      // Initialize the chart with dynamic data
-                      new ApexCharts(document.querySelector("#reportsChart"), {
-                        series: [{
-                          name: 'Modification Types',
-                          data: seriesData
-                        }],
-                        chart: {
-                          height: 350,
-                          type: 'bar', // You can keep it as 'area' or change it to 'bar'
-                          toolbar: {
-                            show: false
-                          }
-                        },
-                        colors: ['#28A745'],
-                        fill: {
-                          type: "solid"
-                        },
-                        dataLabels: {
-                          enabled: false
-                        },
-                        stroke: {
-                          curve: 'smooth',
-                          width: 2
-                        },
-                        xaxis: {
-                          categories: categories,
-                          title: {
-                            text: 'Modification Types'
-                          }
-                        },
-                        yaxis: {
-                          title: {
-                            text: 'Counts'
-                          }
-                        },
-                        tooltip: {
-                          x: {
-                            format: 'dd/MM/yy HH:mm'
-                          },
-                        }
-                      }).render();
-                    })
-                    .catch(error => console.error('Error fetching data:', error));
+                  // Chart for Modification Types
+                  new ApexCharts(document.querySelector("#reportsChart"), {
+                    series: [{
+                      name: 'Modification Types',
+                      data: modificationTypes.map(item => parseInt(item.count))
+                    }],
+                    chart: {
+                      height: 350,
+                      type: 'bar',
+                      toolbar: {
+                        show: false
+                      }
+                    },
+                    colors: ['#28A745'],
+                    fill: {
+                      type: "solid"
+                    },
+                    dataLabels: {
+                      enabled: false
+                    },
+                    stroke: {
+                      curve: 'smooth',
+                      width: 2
+                    },
+                    xaxis: {
+                      categories: modificationTypes.map(item => item.modification_type),
+                      title: {
+                        text: 'Modification Types'
+                      }
+                    },
+                    yaxis: {
+                      title: {
+                        text: 'Counts'
+                      }
+                    },
+                    tooltip: {
+                      x: {
+                        format: 'dd/MM/yy HH:mm'
+                      }
+                    }
+                  }).render();
                 });
               </script>
 
