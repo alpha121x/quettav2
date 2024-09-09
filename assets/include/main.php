@@ -386,7 +386,7 @@
                 $labels = [];
                 foreach ($data as $row) {
                   $percentages[] = round(($row['parcel_count'] / $totalParcels) * 100, 2);
-                  $labels[] = $row['zone_code'];
+                  $labels[] = 'Zone ' . $row['zone_code']; // Adding 'Zone ' prefix
                 }
 
                 // Pass the data to JavaScript
@@ -482,18 +482,85 @@
               <!-- Column Chart -->
               <div id="columnChart"></div>
 
+              <?php
+              // Include database configuration file
+              include("./DAL/db_config.php");
+
+              try {
+                // Query to get the count of modified parcels in each zone, categorized by modification type
+                $stmt = $pdo->prepare("
+        SELECT 
+            zone_code,
+            modification_type,
+            COUNT(*) AS modification_count
+        FROM public.tbl_landuse_f 
+        GROUP BY zone_code, modification_type
+        ORDER BY zone_code, modification_type
+    ");
+                $stmt->execute();
+                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                // Initialize arrays to hold the data
+                $zones = [];
+                $modificationCounts = []; // To store counts per zone
+
+                // Initialize modification types for each zone
+                foreach ($data as $row) {
+                  if (!in_array($row['zone_code'], $zones)) {
+                    $zones[] = $row['zone_code']; // Store unique zone codes
+                    $modificationCounts[$row['zone_code']] = [
+                      'Merge' => 0,
+                      'Same' => 0,
+                      'Split' => 0
+                    ];
+                  }
+
+                  // Assign counts to the appropriate modification type array
+                  $modificationCounts[$row['zone_code']][$row['modification_type']] = (int)$row['modification_count'];
+                  // print_r($modificationCounts);
+                  // die();
+                }
+
+                // Now extract the counts for each modification type into separate arrays
+                $mergeCounts = [];
+                $sameCounts = [];
+                $splitCounts = [];
+
+                foreach ($zones as $zone) {
+                  $mergeCounts[] = $modificationCounts[$zone]['Merge'];
+                  $sameCounts[] = $modificationCounts[$zone]['Same'];
+                  $splitCounts[] = $modificationCounts[$zone]['Split'];
+                }
+
+                // Prefix zones with "Zone" label and pass data to JavaScript
+                $zoneLabels = array_map(fn($zone) => "Zone " . $zone, $zones);
+
+                echo "<script>
+            var zones = " . json_encode($zoneLabels) . ";
+            var mergeCounts = " . json_encode($mergeCounts) . ";
+            var sameCounts = " . json_encode($sameCounts) . ";
+            var splitCounts = " . json_encode($splitCounts) . ";
+          </script>";
+              } catch (PDOException $e) {
+                echo "Error: " . $e->getMessage();
+              }
+              ?>
+
+
+
               <script>
+                console.log(mergeCounts, sameCounts, splitCounts);
                 document.addEventListener("DOMContentLoaded", () => {
                   new ApexCharts(document.querySelector("#columnChart"), {
                     series: [{
-                      name: 'Net Profit',
-                      data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
+                      name: 'Merge',
+                      data: mergeCounts // PHP data
                     }, {
-                      name: 'Revenue',
-                      data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
+                      name: 'Same',
+                      data: sameCounts // PHP data
                     }, {
-                      name: 'Free Cash Flow',
-                      data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
+                      name: 'Split',
+                      data: splitCounts // PHP data
                     }],
                     chart: {
                       type: 'bar',
@@ -515,11 +582,11 @@
                       colors: ['transparent']
                     },
                     xaxis: {
-                      categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                      categories: zones, // PHP data
                     },
                     yaxis: {
                       title: {
-                        text: '$ (thousands)'
+                        text: 'Count of Modified Parcels'
                       }
                     },
                     fill: {
@@ -528,7 +595,7 @@
                     tooltip: {
                       y: {
                         formatter: function(val) {
-                          return "$ " + val + " thousands"
+                          return val + " parcels";
                         }
                       }
                     }
