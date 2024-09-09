@@ -105,11 +105,11 @@
   }
   ?>
 
-<?php
-// Include database configuration file
-include("./DAL/db_config.php");
+  <?php
+  // Include database configuration file
+  include("./DAL/db_config.php");
 
-try {
+  try {
     // Query to get the total parcels count
     $stmt = $pdo->prepare("SELECT COUNT(*) AS total_parcels FROM public.tbl_landuse_f");
     $stmt->execute();
@@ -145,11 +145,10 @@ try {
     $stmt->execute();
     $splitParcelsResult = $stmt->fetch(PDO::FETCH_ASSOC);
     $splitParcels = $splitParcelsResult['split_parcels'];
-
-} catch (PDOException $e) {
+  } catch (PDOException $e) {
     echo "<p>Error: " . $e->getMessage() . "</p>";
-}
-?>
+  }
+  ?>
 
 
 
@@ -266,13 +265,16 @@ try {
 
       <!-- Filter Button -->
       <div class="col-lg-3">
-        <button id="openDrawerBtn" class="filter-button"><i class="bi bi-arrow-down-square"></i> Filter</button>
+        <button id="openDrawerBtn" class="filter-button">
+          <i class="bi bi-arrow-down-square"></i> Filter
+        </button>
 
         <!-- Filter Drawer -->
         <div id="filterDrawer" class="filter-drawer">
           <div class="drawer-content">
             <button id="closeDrawerBtn" class="close-button">&times;</button>
             <h3>Filter Options</h3>
+
             <!-- Zone Selection -->
             <?php
             try {
@@ -298,6 +300,8 @@ try {
                 </select>
               </div>
             </div>
+
+            <!-- Block Selection -->
             <div class="mb-3">
               <div class="form-group">
                 <select class="form-select" id="block-select" aria-label="Select Block">
@@ -305,17 +309,17 @@ try {
                   <!-- Blocks will be populated based on the selected zone -->
                 </select>
               </div>
-
-              <?php
-              try {
-                $stmt = $pdo->query("SELECT DISTINCT modification_type FROM public.tbl_landuse_f ORDER BY modification_type ASC");
-                $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
-              } catch (PDOException $e) {
-                echo "Error: " . $e->getMessage();
-              }
-              ?>
             </div>
 
+            <!-- Category Selection -->
+            <?php
+            try {
+              $stmt = $pdo->query("SELECT DISTINCT modification_type FROM public.tbl_landuse_f ORDER BY modification_type ASC");
+              $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } catch (PDOException $e) {
+              echo "Error: " . $e->getMessage();
+            }
+            ?>
             <div class="mb-3">
               <div class="form-group">
                 <select class="form-select" aria-label="Select Category">
@@ -332,12 +336,65 @@ try {
                 </select>
               </div>
             </div>
+
+            <!-- Land Type Selection -->
+            <?php
+            try {
+              $stmt = $pdo->query("SELECT DISTINCT land_type FROM public.tbl_landuse_f ORDER BY land_type ASC");
+              $landTypes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } catch (PDOException $e) {
+              echo "Error: " . $e->getMessage();
+            }
+            ?>
+            <div class="mb-3">
+              <div class="form-group">
+                <select class="form-select" aria-label="Select Land Type">
+                  <option selected>Select Land Type</option>
+                  <?php if (!empty($landTypes)): ?>
+                    <?php foreach ($landTypes as $landType): ?>
+                      <option value="<?= htmlspecialchars($landType['land_type']); ?>">
+                        <?= htmlspecialchars($landType['land_type']); ?>
+                      </option>
+                    <?php endforeach; ?>
+                  <?php else: ?>
+                    <option disabled>No Land Types Available</option>
+                  <?php endif; ?>
+                </select>
+              </div>
+            </div>
+
+            <!-- Land Sub Type Selection -->
+            <?php
+            try {
+              $stmt = $pdo->query("SELECT DISTINCT land_sub_type FROM public.tbl_landuse_f ORDER BY land_sub_type ASC");
+              $landSubTypes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } catch (PDOException $e) {
+              echo "Error: " . $e->getMessage();
+            }
+            ?>
+            <div class="mb-3">
+              <div class="form-group">
+                <select class="form-select" aria-label="Select Land Sub Type">
+                  <option selected>Select Land Sub Type</option>
+                  <?php if (!empty($landSubTypes)): ?>
+                    <?php foreach ($landSubTypes as $landSubType): ?>
+                      <option value="<?= htmlspecialchars($landSubType['land_sub_type']); ?>">
+                        <?= htmlspecialchars($landSubType['land_sub_type']); ?>
+                      </option>
+                    <?php endforeach; ?>
+                  <?php else: ?>
+                    <option disabled>No Land Sub Types Available</option>
+                  <?php endif; ?>
+                </select>
+              </div>
+            </div>
+
+            <!-- Apply Filters Button -->
+            <button id="applyFiltersBtn" class="apply-button">Apply Filters</button>
           </div>
-          <!-- Add more filter options as needed -->
-          <button id="applyFiltersBtn" class="apply-button">Apply Filters</button>
         </div>
-        </form>
       </div>
+
     </div>
 
 
