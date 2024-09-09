@@ -354,6 +354,125 @@
         </div>
 
 
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Zone Parcels Chart</h5>
+
+              <!-- Pie Chart -->
+              <div id="pieChart"></div>
+
+              <?php
+              // Include database configuration file
+              include("./DAL/db_config.php");
+
+              try {
+                // Query to get counts for each zone
+                $stmt = $pdo->prepare("
+        SELECT 
+            zone_code, 
+            COUNT(*) AS parcel_count 
+        FROM public.tbl_landuse_f 
+        GROUP BY zone_code
+    ");
+                $stmt->execute();
+                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                // Calculate total parcels
+                $totalParcels = array_sum(array_column($data, 'parcel_count'));
+
+                // Prepare data for the chart
+                $percentages = [];
+                $labels = [];
+                foreach ($data as $row) {
+                  $percentages[] = round(($row['parcel_count'] / $totalParcels) * 100, 2);
+                  $labels[] = $row['zone_code'];
+                }
+
+                // Pass the data to JavaScript
+                echo "<script>
+            var parcelPercentages = " . json_encode($percentages) . ";
+            var zoneLabels = " . json_encode($labels) . ";
+          </script>";
+              } catch (PDOException $e) {
+                echo "Error: " . $e->getMessage();
+              }
+              ?>
+
+              <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                  // Initialize the chart with the PHP-generated data
+                  new ApexCharts(document.querySelector("#pieChart"), {
+                    series: parcelPercentages, // PHP data
+                    chart: {
+                      height: 350,
+                      type: 'pie',
+                      toolbar: {
+                        show: true
+                      }
+                    },
+                    labels: zoneLabels, // PHP data
+                    responsive: [{
+                      breakpoint: 480,
+                      options: {
+                        chart: {
+                          width: 200
+                        },
+                        legend: {
+                          position: 'bottom'
+                        }
+                      }
+                    }]
+                  }).render();
+                });
+              </script>
+              <!-- End Pie Chart -->
+
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Bar Chart</h5>
+
+              <!-- Bar Chart -->
+              <div id="barChart"></div>
+
+              <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                  new ApexCharts(document.querySelector("#barChart"), {
+                    series: [{
+                      data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380]
+                    }],
+                    chart: {
+                      type: 'bar',
+                      height: 350
+                    },
+                    plotOptions: {
+                      bar: {
+                        borderRadius: 4,
+                        horizontal: true,
+                      }
+                    },
+                    dataLabels: {
+                      enabled: false
+                    },
+                    xaxis: {
+                      categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan',
+                        'United States', 'China', 'Germany'
+                      ],
+                    }
+                  }).render();
+                });
+              </script>
+              <!-- End Bar Chart -->
+
+            </div>
+          </div>
+        </div>
 
         <div class="col-lg-4">
           <div class="card">
@@ -422,76 +541,6 @@
           </div>
         </div>
 
-        <div class="col-lg-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Bar Chart</h5>
-
-              <!-- Bar Chart -->
-              <div id="barChart"></div>
-
-              <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                  new ApexCharts(document.querySelector("#barChart"), {
-                    series: [{
-                      data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380]
-                    }],
-                    chart: {
-                      type: 'bar',
-                      height: 350
-                    },
-                    plotOptions: {
-                      bar: {
-                        borderRadius: 4,
-                        horizontal: true,
-                      }
-                    },
-                    dataLabels: {
-                      enabled: false
-                    },
-                    xaxis: {
-                      categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan',
-                        'United States', 'China', 'Germany'
-                      ],
-                    }
-                  }).render();
-                });
-              </script>
-              <!-- End Bar Chart -->
-
-            </div>
-          </div>
-        </div>
-
-
-        <div class="col-lg-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Pie Chart</h5>
-
-              <!-- Pie Chart -->
-              <div id="pieChart"></div>
-
-              <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                  new ApexCharts(document.querySelector("#pieChart"), {
-                    series: [44, 55, 13, 43, 22],
-                    chart: {
-                      height: 350,
-                      type: 'pie',
-                      toolbar: {
-                        show: true
-                      }
-                    },
-                    labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E']
-                  }).render();
-                });
-              </script>
-              <!-- End Pie Chart -->
-
-            </div>
-          </div>
-        </div>
 
         <div class="col-lg-4">
           <div class="card">
