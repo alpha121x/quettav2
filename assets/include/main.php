@@ -174,7 +174,7 @@
             ?>
             <div class="mb-3">
               <div class="form-group">
-                <select class="form-select" aria-label="Select Land Type">
+                <select id="landTypeSelect" class="form-select" aria-label="Select Land Type">
                   <option selected>Select Land Type</option>
                   <?php if (!empty($landTypes)): ?>
                     <?php foreach ($landTypes as $landType): ?>
@@ -190,30 +190,53 @@
             </div>
 
             <!-- Land Sub Type Selection -->
-            <?php
-            try {
-              $stmt = $pdo->query("SELECT DISTINCT land_sub_type FROM public.tbl_landuse_f ORDER BY land_sub_type ASC");
-              $landSubTypes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            } catch (PDOException $e) {
-              echo "Error: " . $e->getMessage();
-            }
-            ?>
             <div class="mb-3">
               <div class="form-group">
-                <select class="form-select" aria-label="Select Land Sub Type">
+                <select id="landSubTypeSelect" class="form-select" aria-label="Select Land Sub Type">
                   <option selected>Select Land Sub Type</option>
-                  <?php if (!empty($landSubTypes)): ?>
-                    <?php foreach ($landSubTypes as $landSubType): ?>
-                      <option value="<?= htmlspecialchars($landSubType['land_sub_type']); ?>">
-                        <?= htmlspecialchars($landSubType['land_sub_type']); ?>
-                      </option>
-                    <?php endforeach; ?>
-                  <?php else: ?>
-                    <option disabled>No Land Sub Types Available</option>
-                  <?php endif; ?>
+                  <!-- Land sub types will be populated here based on land type selection -->
                 </select>
               </div>
             </div>
+
+            <script>
+              // Fetch land sub types when the selected land type changes
+              $("#landTypeSelect").on("change", function() {
+                var landType = $(this).val();
+
+                // Clear land sub type selection and reset to default "Select Land Sub Type"
+                $("#landSubTypeSelect").html("<option selected>Select Land Sub Type</option>");
+
+                if (landType) {
+                  // Fetch land sub types based on selected land type
+                  $.ajax({
+                    type: "POST",
+                    url: "DAL/get_land_sub_types.php", // Use a specific file to fetch land sub types
+                    data: {
+                      land_type: landType
+                    },
+                    success: function(response) {
+                      // Parse the JSON response
+                      var landSubTypes = response;
+
+                      // Append the fetched land sub types while keeping "Select Land Sub Type" as the default
+                      if (Array.isArray(landSubTypes) && landSubTypes.length > 0) {
+                        $.each(landSubTypes, function(index, landSubType) {
+                          $("#landSubTypeSelect").append(
+                            $("<option></option>").val(landSubType.land_sub_type).text(landSubType.land_sub_type)
+                          );
+                        });
+                      } else {
+                        $("#landSubTypeSelect").append("<option disabled>No Land Sub Types Available</option>");
+                      }
+                    },
+                    error: function() {
+                      console.error("Error fetching land sub types");
+                    },
+                  });
+                }
+              });
+            </script>
 
             <!-- Apply Filters Button -->
             <button id="applyFiltersBtn" class="apply-button">Apply Filters</button>
@@ -689,73 +712,72 @@
 </main><!-- End #main -->
 
 <script>
- // Get elements
-const openDrawerBtn = document.getElementById('openDrawerBtn');
-const filterDrawer = document.getElementById('filterDrawer');
-const closeDrawerBtn = document.getElementById('closeDrawerBtn');
-const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+  // Get elements
+  const openDrawerBtn = document.getElementById('openDrawerBtn');
+  const filterDrawer = document.getElementById('filterDrawer');
+  const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+  const applyFiltersBtn = document.getElementById('applyFiltersBtn');
 
-// Open drawer
-openDrawerBtn.addEventListener('click', () => {
-  filterDrawer.classList.add('drawer-active');
-  openDrawerBtn.style.display = 'none'; // Hide the open button
-});
-
-// Close drawer
-closeDrawerBtn.addEventListener('click', () => {
-  filterDrawer.classList.remove('drawer-active');
-  setTimeout(() => {
-    openDrawerBtn.style.display = 'block'; // Show the open button after drawer closes
-  }, 300); // Adjust this timeout to match the CSS transition duration
-});
-
-// Apply filters
-applyFiltersBtn.addEventListener('click', () => {
-  // Get selected values
-  const zoneCode = document.getElementById('zone-select').value;
-  const block = document.getElementById('block-select').value;
-  const category = document.querySelector('[aria-label="Select Category"]').value;
-  const landType = document.querySelector('[aria-label="Select Land Type"]').value;
-  const landSubType = document.querySelector('[aria-label="Select Land Sub Type"]').value;
-
-  // Send AJAX request with the selected filter values
-  $.ajax({
-    url: './DAL/fetch_cards_data.php',
-    method: 'POST',
-    dataType: 'json',
-    data: {
-      zone_code: zoneCode,
-      sheet_no: block,
-      modification_type: category,
-      land_type: landType,
-      land_sub_type: landSubType
-    },
-    success: function(data) {
-      // Check for errors
-      if (data.error) {
-        console.error(data.error);
-      } else {
-        // Update card values
-        $('#total-zones').text(data.totalZones);
-        $('#total-blocks').text(data.totalBlocks);
-        $('#total-parcels').text(data.totalParcels);
-        $('#merge-parcels').text(data.mergeParcels);
-        $('#same-parcels').text(data.sameParcels);
-        $('#split-parcels').text(data.splitParcels);
-      }
-
-      // console.log(zoneCode,block,category,landType,landSubType);
-
-      // Close the drawer after applying filters
-      filterDrawer.classList.remove('drawer-active');
-      setTimeout(() => {
-        openDrawerBtn.style.display = 'block'; // Show the open button after drawer closes
-      }, 300);
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.error('AJAX Error: ' + textStatus);
-    }
+  // Open drawer
+  openDrawerBtn.addEventListener('click', () => {
+    filterDrawer.classList.add('drawer-active');
+    openDrawerBtn.style.display = 'none'; // Hide the open button
   });
-});
 
+  // Close drawer
+  closeDrawerBtn.addEventListener('click', () => {
+    filterDrawer.classList.remove('drawer-active');
+    setTimeout(() => {
+      openDrawerBtn.style.display = 'block'; // Show the open button after drawer closes
+    }, 300); // Adjust this timeout to match the CSS transition duration
+  });
+
+  // Apply filters
+  applyFiltersBtn.addEventListener('click', () => {
+    // Get selected values
+    const zoneCode = document.getElementById('zone-select').value;
+    const block = document.getElementById('block-select').value;
+    const category = document.querySelector('[aria-label="Select Category"]').value;
+    const landType = document.querySelector('[aria-label="Select Land Type"]').value;
+    const landSubType = document.querySelector('[aria-label="Select Land Sub Type"]').value;
+
+    // Send AJAX request with the selected filter values
+    $.ajax({
+      url: './DAL/fetch_cards_data.php',
+      method: 'POST',
+      dataType: 'json',
+      data: {
+        zone_code: zoneCode,
+        sheet_no: block,
+        modification_type: category,
+        land_type: landType,
+        land_sub_type: landSubType
+      },
+      success: function(data) {
+        // Check for errors
+        if (data.error) {
+          console.error(data.error);
+        } else {
+          // Update card values
+          $('#total-zones').text(data.totalZones);
+          $('#total-blocks').text(data.totalBlocks);
+          $('#total-parcels').text(data.totalParcels);
+          $('#merge-parcels').text(data.mergeParcels);
+          $('#same-parcels').text(data.sameParcels);
+          $('#split-parcels').text(data.splitParcels);
+        }
+
+        // console.log(zoneCode,block,category,landType,landSubType);
+
+        // Close the drawer after applying filters
+        filterDrawer.classList.remove('drawer-active');
+        setTimeout(() => {
+          openDrawerBtn.style.display = 'block'; // Show the open button after drawer closes
+        }, 300);
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.error('AJAX Error: ' + textStatus);
+      }
+    });
+  });
 </script>
