@@ -744,6 +744,8 @@ applyFiltersBtn.addEventListener('click', () => {
         $('#split-parcels').text(data.splitParcels);
       }
 
+      // console.log(zoneCode,block,category,landType,landSubType);
+
       // Close the drawer after applying filters
       filterDrawer.classList.remove('drawer-active');
       setTimeout(() => {
