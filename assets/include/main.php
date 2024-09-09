@@ -242,7 +242,7 @@
       </div>
     </div>
 
-  
+
     <div class="col-lg-12">
       <div class="row">
 
@@ -263,63 +263,67 @@
             </div>
 
             <div class="card-body">
-              <h5 class="card-title">Reports <span>/Today</span></h5>
+              <h5 class="card-title">Land Modification Types Chart</span></h5>
 
               <!-- Line Chart -->
               <div id="reportsChart"></div>
 
               <script>
                 document.addEventListener("DOMContentLoaded", () => {
-                  new ApexCharts(document.querySelector("#reportsChart"), {
-                    series: [{
-                      name: 'Sales',
-                      data: [31, 40, 28, 51, 42, 82, 56],
-                    }, {
-                      name: 'Revenue',
-                      data: [11, 32, 45, 32, 34, 52, 41]
-                    }, {
-                      name: 'Customers',
-                      data: [15, 11, 32, 18, 9, 24, 11]
-                    }],
-                    chart: {
-                      height: 350,
-                      type: 'area',
-                      toolbar: {
-                        show: false
-                      },
-                    },
-                    markers: {
-                      size: 4
-                    },
-                    colors: ['#4154f1', '#2eca6a', '#ff771d'],
-                    fill: {
-                      type: "gradient",
-                      gradient: {
-                        shadeIntensity: 1,
-                        opacityFrom: 0.3,
-                        opacityTo: 0.4,
-                        stops: [0, 90, 100]
-                      }
-                    },
-                    dataLabels: {
-                      enabled: false
-                    },
-                    stroke: {
-                      curve: 'smooth',
-                      width: 2
-                    },
-                    xaxis: {
-                      type: 'datetime',
-                      categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-                    },
-                    tooltip: {
-                      x: {
-                        format: 'dd/MM/yy HH:mm'
-                      },
-                    }
-                  }).render();
+                  // Fetch data from the PHP script
+                  fetch('DAl/fetch_chart_data.php')
+                    .then(response => response.json())
+                    .then(data => {
+                      // Prepare data for the chart
+                      const categories = data.map(item => item.modification_type);
+                      const seriesData = data.map(item => parseInt(item.count));
+
+                      // Initialize the chart with dynamic data
+                      new ApexCharts(document.querySelector("#reportsChart"), {
+                        series: [{
+                          name: 'Modification Types',
+                          data: seriesData
+                        }],
+                        chart: {
+                          height: 350,
+                          type: 'bar', // You can keep it as 'area' or change it to 'bar'
+                          toolbar: {
+                            show: false
+                          }
+                        },
+                        colors: ['#4154f1'],
+                        fill: {
+                          type: "solid"
+                        },
+                        dataLabels: {
+                          enabled: false
+                        },
+                        stroke: {
+                          curve: 'smooth',
+                          width: 2
+                        },
+                        xaxis: {
+                          categories: categories,
+                          title: {
+                            text: 'Modification Types'
+                          }
+                        },
+                        yaxis: {
+                          title: {
+                            text: 'Counts'
+                          }
+                        },
+                        tooltip: {
+                          x: {
+                            format: 'dd/MM/yy HH:mm'
+                          },
+                        }
+                      }).render();
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
                 });
               </script>
+
               <!-- End Line Chart -->
 
             </div>
@@ -528,22 +532,22 @@
 </main><!-- End #main -->
 
 <script>
-      // Get elements
-      const openDrawerBtn = document.getElementById('openDrawerBtn');
-      const filterDrawer = document.getElementById('filterDrawer');
-      const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+  // Get elements
+  const openDrawerBtn = document.getElementById('openDrawerBtn');
+  const filterDrawer = document.getElementById('filterDrawer');
+  const closeDrawerBtn = document.getElementById('closeDrawerBtn');
 
-      // Open drawer
-      openDrawerBtn.addEventListener('click', () => {
-        filterDrawer.classList.add('drawer-active');
-        openDrawerBtn.style.display = 'none'; // Hide the open button
-      });
+  // Open drawer
+  openDrawerBtn.addEventListener('click', () => {
+    filterDrawer.classList.add('drawer-active');
+    openDrawerBtn.style.display = 'none'; // Hide the open button
+  });
 
-      // Close drawer
-      closeDrawerBtn.addEventListener('click', () => {
-        filterDrawer.classList.remove('drawer-active');
-        setTimeout(() => {
-          openDrawerBtn.style.display = 'block'; // Show the open button after drawer closes
-        }, 300); // Adjust this timeout to match the CSS transition duration
-      });
-    </script>
+  // Close drawer
+  closeDrawerBtn.addEventListener('click', () => {
+    filterDrawer.classList.remove('drawer-active');
+    setTimeout(() => {
+      openDrawerBtn.style.display = 'block'; // Show the open button after drawer closes
+    }, 300); // Adjust this timeout to match the CSS transition duration
+  });
+</script>
