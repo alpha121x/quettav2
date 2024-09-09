@@ -13,9 +13,10 @@ $modification_type = isset($_POST['modification_type']) && $_POST['modification_
 
 try {
     // Function to fetch distinct count with optional filters
-    function getDistinctCount($pdo, $column, $table, $zone_code = null, $sheet_no = null, $land_type = null, $land_sub_type = null) {
+    function getDistinctCount($pdo, $column, $table, $zone_code = null, $sheet_no = null, $land_type = null, $land_sub_type = null)
+    {
         $query = "SELECT COUNT(DISTINCT $column) FROM $table WHERE 1=1";
-        
+
         // Apply filters if available
         if ($zone_code) {
             $query .= " AND zone_code = :zone_code";
@@ -51,9 +52,10 @@ try {
     }
 
     // Function to fetch simple count with optional filters
-    function getCount($pdo, $column, $table, $modification_type = null, $zone_code = null, $sheet_no = null, $land_type = null, $land_sub_type = null) {
+    function getCount($pdo, $column, $table, $modification_type = null, $zone_code = null, $sheet_no = null, $land_type = null, $land_sub_type = null)
+    {
         $query = "SELECT COUNT($column) FROM $table WHERE 1=1";
-        
+
         // Apply filters if available
         if ($modification_type) {
             $query .= " AND modification_type = :modification_type";
@@ -114,8 +116,6 @@ try {
 
     // Return the response as JSON
     echo json_encode($response);
-
 } catch (PDOException $e) {
     echo json_encode(['error' => $e->getMessage()]);
 }
-?>
