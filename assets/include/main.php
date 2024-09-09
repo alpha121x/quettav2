@@ -436,16 +436,52 @@
         <div class="col-lg-4">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Bar Chart</h5>
+              <h5 class="card-title">Land Types Chart</h5>
 
               <!-- Bar Chart -->
               <div id="barChart"></div>
+              <?php
+              // Include database configuration file
+              include("./DAL/db_config.php");
+
+              try {
+                // Query to get the count of each land type
+                $stmt = $pdo->prepare("
+            SELECT 
+                land_type,
+                COUNT(*) AS land_count
+            FROM public.tbl_landuse_f 
+            GROUP BY land_type
+            ORDER BY land_count DESC
+        ");
+                $stmt->execute();
+                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                // Initialize arrays to hold the data
+                $landTypes = [];
+                $landCounts = [];
+
+                foreach ($data as $row) {
+                  $landTypes[] = $row['land_type'];
+                  $landCounts[] = (int)$row['land_count'];
+                }
+              } catch (PDOException $e) {
+                echo "<p>Error: " . $e->getMessage() . "</p>";
+              }
+              ?>
+
 
               <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                  new ApexCharts(document.querySelector("#barChart"), {
+                document.addEventListener('DOMContentLoaded', () => {
+                  // PHP variables injected directly into JavaScript
+                  var landTypes = <?php echo json_encode($landTypes); ?>;
+                  var landCounts = <?php echo json_encode($landCounts); ?>;
+
+                  // Initialize chart with fetched data
+                  new ApexCharts(document.querySelector('#barChart'), {
                     series: [{
-                      data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380]
+                      name: 'Land Count',
+                      data: landCounts
                     }],
                     chart: {
                       type: 'bar',
@@ -454,16 +490,17 @@
                     plotOptions: {
                       bar: {
                         borderRadius: 4,
-                        horizontal: true,
+                        horizontal: true
                       }
                     },
                     dataLabels: {
-                      enabled: false
+                      enabled: false,
+                      formatter: function(val) {
+                        return val;
+                      }
                     },
                     xaxis: {
-                      categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan',
-                        'United States', 'China', 'Germany'
-                      ],
+                      categories: landTypes
                     }
                   }).render();
                 });
@@ -477,7 +514,7 @@
         <div class="col-lg-4">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Column Chart</h5>
+              <h5 class="card-title">Zone Modification Types Chart</h5>
 
               <!-- Column Chart -->
               <div id="columnChart"></div>
@@ -527,10 +564,6 @@
                   }
                 }
 
-                // Print the $modificationCounts array for debugging
-                // echo "<pre>";
-                // print_r($modificationCounts);
-                // echo "</pre>";
 
                 // Now extract the counts for each modification type into separate arrays
                 $mergeCounts = [];
@@ -548,10 +581,6 @@
 
                 // Output JSON data directly to debug
                 echo "<script>
-        console.log('Zones:', " . json_encode($zoneLabels) . ");
-        console.log('Merge Counts:', " . json_encode($mergeCounts) . ");
-        console.log('Same Counts:', " . json_encode($sameCounts) . ");
-        console.log('Split Counts:', " . json_encode($splitCounts) . ");
         var zones = " . json_encode($zoneLabels) . ";
         var mergeCounts = " . json_encode($mergeCounts) . ";
         var sameCounts = " . json_encode($sameCounts) . ";
@@ -565,7 +594,6 @@
 
 
               <script>
-                console.log(mergeCounts, sameCounts, splitCounts);
                 document.addEventListener("DOMContentLoaded", () => {
                   new ApexCharts(document.querySelector("#columnChart"), {
                     series: [{
