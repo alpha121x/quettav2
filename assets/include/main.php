@@ -506,20 +506,31 @@
 
                 // Initialize modification types for each zone
                 foreach ($data as $row) {
-                  if (!in_array($row['zone_code'], $zones)) {
-                    $zones[] = $row['zone_code']; // Store unique zone codes
-                    $modificationCounts[$row['zone_code']] = [
+                  $zoneCode = $row['zone_code'];
+                  $modificationType = trim($row['modification_type']); // Trim whitespace
+                  $modificationType = ucfirst(strtolower($modificationType)); // Standardize case
+
+                  if (!in_array($zoneCode, $zones)) {
+                    $zones[] = $zoneCode; // Store unique zone codes
+                    $modificationCounts[$zoneCode] = [
                       'Merge' => 0,
                       'Same' => 0,
                       'Split' => 0
                     ];
                   }
 
-                  // Assign counts to the appropriate modification type array
-                  $modificationCounts[$row['zone_code']][$row['modification_type']] = (int)$row['modification_count'];
-                  // print_r($modificationCounts);
-                  // die();
+                  if (array_key_exists($modificationType, $modificationCounts[$zoneCode])) {
+                    $modificationCounts[$zoneCode][$modificationType] = (int)$row['modification_count'];
+                  } else {
+                    // Show unexpected modification types
+                    echo "Unexpected modification type: " . htmlspecialchars($modificationType) . "<br>";
+                  }
                 }
+
+                // Print the $modificationCounts array for debugging
+                // echo "<pre>";
+                // print_r($modificationCounts);
+                // echo "</pre>";
 
                 // Now extract the counts for each modification type into separate arrays
                 $mergeCounts = [];
@@ -527,20 +538,25 @@
                 $splitCounts = [];
 
                 foreach ($zones as $zone) {
-                  $mergeCounts[] = $modificationCounts[$zone]['Merge'];
-                  $sameCounts[] = $modificationCounts[$zone]['Same'];
-                  $splitCounts[] = $modificationCounts[$zone]['Split'];
+                  $mergeCounts[] = isset($modificationCounts[$zone]['Merge']) ? $modificationCounts[$zone]['Merge'] : 0;
+                  $sameCounts[] = isset($modificationCounts[$zone]['Same']) ? $modificationCounts[$zone]['Same'] : 0;
+                  $splitCounts[] = isset($modificationCounts[$zone]['Split']) ? $modificationCounts[$zone]['Split'] : 0;
                 }
 
                 // Prefix zones with "Zone" label and pass data to JavaScript
                 $zoneLabels = array_map(fn($zone) => "Zone " . $zone, $zones);
 
+                // Output JSON data directly to debug
                 echo "<script>
-            var zones = " . json_encode($zoneLabels) . ";
-            var mergeCounts = " . json_encode($mergeCounts) . ";
-            var sameCounts = " . json_encode($sameCounts) . ";
-            var splitCounts = " . json_encode($splitCounts) . ";
-          </script>";
+        console.log('Zones:', " . json_encode($zoneLabels) . ");
+        console.log('Merge Counts:', " . json_encode($mergeCounts) . ");
+        console.log('Same Counts:', " . json_encode($sameCounts) . ");
+        console.log('Split Counts:', " . json_encode($splitCounts) . ");
+        var zones = " . json_encode($zoneLabels) . ";
+        var mergeCounts = " . json_encode($mergeCounts) . ";
+        var sameCounts = " . json_encode($sameCounts) . ";
+        var splitCounts = " . json_encode($splitCounts) . ";
+    </script>";
               } catch (PDOException $e) {
                 echo "Error: " . $e->getMessage();
               }
