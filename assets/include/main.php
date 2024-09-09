@@ -105,6 +105,53 @@
   }
   ?>
 
+<?php
+// Include database configuration file
+include("./DAL/db_config.php");
+
+try {
+    // Query to get the total parcels count
+    $stmt = $pdo->prepare("SELECT COUNT(*) AS total_parcels FROM public.tbl_landuse_f");
+    $stmt->execute();
+    $totalParcelsResult = $stmt->fetch(PDO::FETCH_ASSOC);
+    $totalParcels = $totalParcelsResult['total_parcels'];
+
+    // Query to get the count of merged parcels
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) AS merge_parcels
+        FROM public.tbl_landuse_f
+        WHERE modification_type = 'MERGE'
+    ");
+    $stmt->execute();
+    $mergeParcelsResult = $stmt->fetch(PDO::FETCH_ASSOC);
+    $mergeParcels = $mergeParcelsResult['merge_parcels'];
+
+    // Query to get the count of same parcels
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) AS same_parcels
+        FROM public.tbl_landuse_f
+        WHERE modification_type = 'SAME'
+    ");
+    $stmt->execute();
+    $sameParcelsResult = $stmt->fetch(PDO::FETCH_ASSOC);
+    $sameParcels = $sameParcelsResult['same_parcels'];
+
+    // Query to get the count of split parcels
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) AS split_parcels
+        FROM public.tbl_landuse_f
+        WHERE modification_type = 'SPLIT'
+    ");
+    $stmt->execute();
+    $splitParcelsResult = $stmt->fetch(PDO::FETCH_ASSOC);
+    $splitParcels = $splitParcelsResult['split_parcels'];
+
+} catch (PDOException $e) {
+    echo "<p>Error: " . $e->getMessage() . "</p>";
+}
+?>
+
+
 
 
   <section class="section dashboard">
@@ -157,6 +204,57 @@
                   </div>
                   <div class="ps-3">
                     <h6><?php echo $totalParcels; ?></h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Merge Parcels Card -->
+          <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="card info-card merge-parcels-card">
+              <div class="card-body">
+                <h5 class="card-title">Merge Parcels</h5>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="background-color: #e8f5e9;">
+                    <i class="bi bi-union" style="color: #4CAF50; font-size: 24px;"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6><?php echo $mergeParcels; ?></h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Same Parcels Card -->
+          <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="card info-card same-parcels-card">
+              <div class="card-body">
+                <h5 class="card-title">Same Parcels</h5>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="background-color: #fff3e0;">
+                    <i class="bi bi-boxes" style="color: #FF9800; font-size: 24px;"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6><?php echo $sameParcels; ?></h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Splits Parcels Card -->
+          <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="card info-card splits-count-card">
+              <div class="card-body">
+                <h5 class="card-title">Split Parcels</h5>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="background-color: #e1f5fe;">
+                    <i class="bi bi-dash-square" style="color: #2196F3; font-size: 24px;"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6><?php echo $splitParcels; ?></h6>
                   </div>
                 </div>
               </div>
