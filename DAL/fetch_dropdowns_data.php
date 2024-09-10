@@ -22,7 +22,6 @@ if (isset($_POST['land_type'])) {
         } else {
             echo '<option disabled>No Land Sub Types Available</option>';
         }
-
     } catch (PDOException $e) {
         echo '<option disabled>Error fetching land sub types</option>';
     }
@@ -44,11 +43,28 @@ if (isset($_POST['land_type'])) {
         } else {
             echo '<option disabled>No Blocks Available</option>';
         }
-
     } catch (PDOException $e) {
         echo '<option disabled>Error fetching blocks</option>';
     }
 } else {
     echo '<option disabled>Invalid Request</option>';
+}
+?>
+
+<?php
+try {
+    $stmt = $pdo->query("SELECT DISTINCT zone_code FROM public.tbl_landuse_f ORDER BY zone_code ASC");
+    $zones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
+?>
+
+<?php
+try {
+    $stmt = $pdo->query("SELECT DISTINCT modification_type FROM public.tbl_landuse_f ORDER BY modification_type ASC");
+    $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
 }
 ?>

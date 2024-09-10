@@ -1,4 +1,5 @@
 <?php include "./DAL/fetch_chart_data.php" ?>
+<?php include "./DAL/fetch_dropdowns_data.php"?>
 <main id="main" class="main">
 
   <div class="pagetitle">
@@ -32,16 +33,6 @@
           <div class="drawer-content">
             <button id="closeDrawerBtn" class="close-button">&times;</button>
             <h3>Filter Options</h3>
-
-            <!-- Zone Selection -->
-            <?php
-            try {
-              $stmt = $pdo->query("SELECT DISTINCT zone_code FROM public.tbl_landuse_f ORDER BY zone_code ASC");
-              $zones = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            } catch (PDOException $e) {
-              echo "Error: " . $e->getMessage();
-            }
-            ?>
             <div class="mb-3">
               <div class="form-group">
                 <select class="form-select" id="zone-select" aria-label="Select Zone">
@@ -70,14 +61,6 @@
             </div>
 
             <!-- Category Selection -->
-            <?php
-            try {
-              $stmt = $pdo->query("SELECT DISTINCT modification_type FROM public.tbl_landuse_f ORDER BY modification_type ASC");
-              $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            } catch (PDOException $e) {
-              echo "Error: " . $e->getMessage();
-            }
-            ?>
             <div class="mb-3">
               <div class="form-group">
                 <select class="form-select" id="category-select" aria-label="Select Category">
