@@ -200,36 +200,6 @@
               </div>
             </div>
 
-            <script>
-              // Fetch land sub types when the selected land type changes
-              $("#landTypeSelect").on("change", function() {
-                var landType = $(this).val();
-
-                // Clear land sub type selection and reset to default "Select Land Sub Type"
-                $("#landSubTypeSelect").html(
-                  "<option selected>Select Land Sub Type</option>"
-                );
-
-                if (landType) {
-                  // Fetch land sub types based on selected land type
-                  $.ajax({
-                    type: "POST",
-                    url: "DAL/fetch_land_sub_types.php", // Updated file path
-                    data: {
-                      land_type: landType,
-                    },
-                    success: function(response) {
-                      // Append the fetched land sub types while keeping "Select Land Sub Type" as the default
-                      $("#landSubTypeSelect").append(response);
-                    },
-                    error: function() {
-                      console.error("Error fetching land sub types");
-                    },
-                  });
-                }
-              });
-            </script>
-
             <!-- Apply Filters Button -->
             <button id="applyFiltersBtn" class="apply-button">Apply Filters</button>
           </div>
@@ -361,7 +331,35 @@
 </main><!-- End #main -->
 
 <script>
-  // Get elements
+  // Fetch land sub types when the selected land type changes
+  $("#landTypeSelect").on("change", function() {
+    var landType = $(this).val();
+
+    // Clear land sub type selection and reset to default "Select Land Sub Type"
+    $("#landSubTypeSelect").html(
+      "<option selected>Select Land Sub Type</option>"
+    );
+
+    if (landType) {
+      // Fetch land sub types based on selected land type
+      $.ajax({
+        type: "POST",
+        url: "DAL/fetch_dropdowns_data.php",  // Updated file path
+        data: {
+          land_type: landType,
+        },
+        success: function(response) {
+          // Append the fetched land sub types while keeping "Select Land Sub Type" as the default
+          $("#landSubTypeSelect").append(response);
+        },
+        error: function() {
+          console.error("Error fetching land sub types");
+        },
+      });
+    }
+  });
+
+  // Get elements for the filter drawer
   const openDrawerBtn = document.getElementById('openDrawerBtn');
   const filterDrawer = document.getElementById('filterDrawer');
   const closeDrawerBtn = document.getElementById('closeDrawerBtn');
@@ -416,8 +414,6 @@
           $('#split-parcels').text(data.splitParcels);
         }
 
-        // console.log(zoneCode,block,category,landType,landSubType);
-
         // Close the drawer after applying filters
         filterDrawer.classList.remove('drawer-active');
         setTimeout(() => {
@@ -430,8 +426,6 @@
     });
   });
 </script>
-
-
 
 // charts scripts //
 <script>
