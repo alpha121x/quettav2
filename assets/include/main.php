@@ -254,29 +254,11 @@
         <div class="col-lg-4">
           <div class="card">
 
-            <div class="filter">
-              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                <li class="dropdown-header text-start">
-                  <h6>Filter</h6>
-                </li>
-
-                <li><a class="dropdown-item" href="#">Today</a></li>
-                <li><a class="dropdown-item" href="#">This Month</a></li>
-                <li><a class="dropdown-item" href="#">This Year</a></li>
-              </ul>
-            </div>
-
             <div class="card-body">
               <h5 class="card-title">Land Modification Types Chart</span></h5>
 
               <!-- Line Chart -->
               <div id="reportsChart"></div>
-
-              <script>
-
-              </script>
-
               <!-- End Line Chart -->
 
             </div>
@@ -314,10 +296,6 @@
 
               <!-- Pie Chart -->
               <div id="pieChart"></div>
-
-              <script>
-
-              </script>
               <!-- End Pie Chart -->
 
             </div>
@@ -333,10 +311,6 @@
 
               <!-- Line Chart -->
               <div id="lineChart"></div>
-
-              <script>
-
-              </script>
               <!-- End Line Chart -->
 
             </div>
@@ -350,179 +324,6 @@
 
               <!-- Column Chart -->
               <div id="columnChart"></div>
-
-              <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                  // Chart for Modification Types
-                  new ApexCharts(document.querySelector("#reportsChart"), {
-                    series: [{
-                      name: 'Modification Types',
-                      data: modificationTypes.map(item => parseInt(item.count))
-                    }],
-                    chart: {
-                      height: 350,
-                      type: 'bar',
-                      toolbar: {
-                        show: false
-                      }
-                    },
-                    colors: ['#28A745'],
-                    fill: {
-                      type: "solid"
-                    },
-                    dataLabels: {
-                      enabled: false
-                    },
-                    stroke: {
-                      curve: 'smooth',
-                      width: 2
-                    },
-                    xaxis: {
-                      categories: modificationTypes.map(item => item.modification_type),
-                      title: {
-                        text: 'Modification Types'
-                      }
-                    },
-                    yaxis: {
-                      title: {
-                        text: 'Counts'
-                      }
-                    },
-                    tooltip: {
-                      x: {
-                        format: 'dd/MM/yy HH:mm'
-                      }
-                    }
-                  }).render();
-                });
-
-                document.addEventListener("DOMContentLoaded", () => {
-                  // Initialize the chart with the PHP-generated data
-                  new ApexCharts(document.querySelector("#pieChart"), {
-                    series: parcelPercentages, // PHP data
-                    chart: {
-                      height: 350,
-                      type: 'pie',
-                      toolbar: {
-                        show: true
-                      }
-                    },
-                    labels: zoneLabels, // PHP data
-                    responsive: [{
-                      breakpoint: 480,
-                      options: {
-                        chart: {
-                          width: 200
-                        },
-                        legend: {
-                          position: 'bottom'
-                        }
-                      }
-                    }]
-                  }).render();
-                });
-
-
-
-                document.addEventListener("DOMContentLoaded", () => {
-                  // Initialize chart with fetched data
-                  new ApexCharts(document.querySelector("#lineChart"), {
-                    series: [{
-                      name: "Land Count",
-                      data: landCounts
-                    }],
-                    chart: {
-                      height: 350,
-                      type: 'line',
-                      zoom: {
-                        enabled: false
-                      }
-                    },
-                    dataLabels: {
-                      enabled: false
-                    },
-                    stroke: {
-                      curve: 'smooth' // Smooth curve for the line
-                    },
-                    grid: {
-                      row: {
-                        colors: ['#f3f3f3', 'transparent'], // Alternating row colors
-                        opacity: 0.5
-                      },
-                    },
-                    xaxis: {
-                      categories: landTypes,
-                      title: {
-                        text: 'Land Types'
-                      }
-                    },
-                    yaxis: {
-                      title: {
-                        text: 'Land Count'
-                      },
-                      tickAmount: 5, // Number of ticks to show
-                      labels: {
-                        formatter: function(value) {
-                          return value.toFixed(0); // Display integer values
-                        }
-                      }
-                    }
-                  }).render();
-                });
-
-
-                document.addEventListener("DOMContentLoaded", () => {
-                  new ApexCharts(document.querySelector("#columnChart"), {
-                    series: [{
-                      name: 'Merge',
-                      data: mergeCounts // PHP data
-                    }, {
-                      name: 'Same',
-                      data: sameCounts // PHP data
-                    }, {
-                      name: 'Split',
-                      data: splitCounts // PHP data
-                    }],
-                    chart: {
-                      type: 'bar',
-                      height: 350
-                    },
-                    plotOptions: {
-                      bar: {
-                        horizontal: false,
-                        columnWidth: '55%',
-                        endingShape: 'rounded'
-                      },
-                    },
-                    dataLabels: {
-                      enabled: false
-                    },
-                    stroke: {
-                      show: true,
-                      width: 2,
-                      colors: ['transparent']
-                    },
-                    xaxis: {
-                      categories: zones, // PHP data
-                    },
-                    yaxis: {
-                      title: {
-                        text: 'Count of Modified Parcels'
-                      }
-                    },
-                    fill: {
-                      opacity: 1
-                    },
-                    tooltip: {
-                      y: {
-                        formatter: function(val) {
-                          return val + " parcels";
-                        }
-                      }
-                    }
-                  }).render();
-                });
-              </script>
               <!-- End Column Chart -->
 
             </div>
@@ -636,5 +437,181 @@
         console.error('AJAX Error: ' + textStatus);
       }
     });
+  });
+</script>
+
+
+
+// charts scripts //
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Chart for Modification Types
+    new ApexCharts(document.querySelector("#reportsChart"), {
+      series: [{
+        name: 'Modification Types',
+        data: modificationTypes.map(item => parseInt(item.count))
+      }],
+      chart: {
+        height: 350,
+        type: 'bar',
+        toolbar: {
+          show: false
+        }
+      },
+      colors: ['#28A745'],
+      fill: {
+        type: "solid"
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: 'smooth',
+        width: 2
+      },
+      xaxis: {
+        categories: modificationTypes.map(item => item.modification_type),
+        title: {
+          text: 'Modification Types'
+        }
+      },
+      yaxis: {
+        title: {
+          text: 'Counts'
+        }
+      },
+      tooltip: {
+        x: {
+          format: 'dd/MM/yy HH:mm'
+        }
+      }
+    }).render();
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Initialize the chart with the PHP-generated data
+    new ApexCharts(document.querySelector("#pieChart"), {
+      series: parcelPercentages, // PHP data
+      chart: {
+        height: 350,
+        type: 'pie',
+        toolbar: {
+          show: true
+        }
+      },
+      labels: zoneLabels, // PHP data
+      responsive: [{
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200
+          },
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }]
+    }).render();
+  });
+
+
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Initialize chart with fetched data
+    new ApexCharts(document.querySelector("#lineChart"), {
+      series: [{
+        name: "Land Count",
+        data: landCounts
+      }],
+      chart: {
+        height: 350,
+        type: 'line',
+        zoom: {
+          enabled: false
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: 'smooth' // Smooth curve for the line
+      },
+      grid: {
+        row: {
+          colors: ['#f3f3f3', 'transparent'], // Alternating row colors
+          opacity: 0.5
+        },
+      },
+      xaxis: {
+        categories: landTypes,
+        title: {
+          text: 'Land Types'
+        }
+      },
+      yaxis: {
+        title: {
+          text: 'Land Count'
+        },
+        tickAmount: 5, // Number of ticks to show
+        labels: {
+          formatter: function(value) {
+            return value.toFixed(0); // Display integer values
+          }
+        }
+      }
+    }).render();
+  });
+
+
+  document.addEventListener("DOMContentLoaded", () => {
+    new ApexCharts(document.querySelector("#columnChart"), {
+      series: [{
+        name: 'Merge',
+        data: mergeCounts // PHP data
+      }, {
+        name: 'Same',
+        data: sameCounts // PHP data
+      }, {
+        name: 'Split',
+        data: splitCounts // PHP data
+      }],
+      chart: {
+        type: 'bar',
+        height: 350
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: '55%',
+          endingShape: 'rounded'
+        },
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        show: true,
+        width: 2,
+        colors: ['transparent']
+      },
+      xaxis: {
+        categories: zones, // PHP data
+      },
+      yaxis: {
+        title: {
+          text: 'Count of Modified Parcels'
+        }
+      },
+      fill: {
+        opacity: 1
+      },
+      tooltip: {
+        y: {
+          formatter: function(val) {
+            return val + " parcels";
+          }
+        }
+      }
+    }).render();
   });
 </script>
