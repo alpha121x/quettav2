@@ -210,4 +210,30 @@ $("#table tbody").on("click", ".view-btn", function () {
   });
 });
 
+// Fetch land sub types when the selected land type changes
+$("#landTypeSelect").on("change", function () {
+  var landType = $(this).val();
 
+  // Clear land sub type selection and reset to default "Select Land Sub Type"
+  $("#landSubTypeSelect").html(
+    "<option selected>Select Land Sub Type</option>"
+  );
+
+  if (landType) {
+    // Fetch land sub types based on selected land type
+    $.ajax({
+      type: "POST",
+      url: "DAL/fetch_land_sub_types.php", // Updated file path
+      data: {
+        land_type: landType,
+      },
+      success: function (response) {
+        // Append the fetched land sub types while keeping "Select Land Sub Type" as the default
+        $("#landSubTypeSelect").append(response);
+      },
+      error: function () {
+        console.error("Error fetching land sub types");
+      },
+    });
+  }
+});

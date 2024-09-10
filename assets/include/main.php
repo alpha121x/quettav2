@@ -206,30 +206,21 @@
                 var landType = $(this).val();
 
                 // Clear land sub type selection and reset to default "Select Land Sub Type"
-                $("#landSubTypeSelect").html("<option selected>Select Land Sub Type</option>");
+                $("#landSubTypeSelect").html(
+                  "<option selected>Select Land Sub Type</option>"
+                );
 
                 if (landType) {
                   // Fetch land sub types based on selected land type
                   $.ajax({
                     type: "POST",
-                    url: "DAL/get_land_sub_types.php", // Use a specific file to fetch land sub types
+                    url: "DAL/fetch_land_sub_types.php", // Updated file path
                     data: {
-                      land_type: landType
+                      land_type: landType,
                     },
                     success: function(response) {
-                      // Parse the JSON response
-                      var landSubTypes = response;
-
                       // Append the fetched land sub types while keeping "Select Land Sub Type" as the default
-                      if (Array.isArray(landSubTypes) && landSubTypes.length > 0) {
-                        $.each(landSubTypes, function(index, landSubType) {
-                          $("#landSubTypeSelect").append(
-                            $("<option></option>").val(landSubType.land_sub_type).text(landSubType.land_sub_type)
-                          );
-                        });
-                      } else {
-                        $("#landSubTypeSelect").append("<option disabled>No Land Sub Types Available</option>");
-                      }
+                      $("#landSubTypeSelect").append(response);
                     },
                     error: function() {
                       console.error("Error fetching land sub types");
