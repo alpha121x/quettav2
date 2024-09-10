@@ -56,7 +56,7 @@
             <h5 class="card-title">Merge Parcels</h5>
             <div class="d-flex align-items-center">
                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="background-color: #e8f5e9;">
-                    <i class="bi bi-union" style="color: #4CAF50; font-size: 24px;"></i>
+                    <i class="bi bi-intersect" style="color: #4CAF50; font-size: 24px;"></i>
                 </div>
                 <div class="ps-3">
                 <h6 id="merge-parcels">Loading...</h6>
@@ -73,7 +73,7 @@
             <h5 class="card-title">Same Parcels</h5>
             <div class="d-flex align-items-center">
                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="background-color: #fff3e0;">
-                    <i class="bi bi-boxes" style="color: #FF9800; font-size: 24px;"></i>
+                    <i class="bi bi-boxes" style="color: #4CAF50; font-size: 24px;"></i>
                 </div>
                 <div class="ps-3">
                 <h6 id="same-parcels">Loading...</h6>
@@ -90,7 +90,7 @@
             <h5 class="card-title">Split Parcels</h5>
             <div class="d-flex align-items-center">
                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="background-color: #e1f5fe;">
-                    <i class="bi bi-dash-square" style="color: #2196F3; font-size: 24px;"></i>
+                    <i class="bi bi-dash-square" style="color: #4CAF50; font-size: 24px;"></i>
                 </div>
                 <div class="ps-3">
                 <h6 id="split-parcels">Loading...</h6>
