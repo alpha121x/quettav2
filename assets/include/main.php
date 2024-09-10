@@ -149,7 +149,7 @@
             ?>
             <div class="mb-3">
               <div class="form-group">
-                <select class="form-select" aria-label="Select Category">
+                <select class="form-select" id="category-select" aria-label="Select Category">
                   <option selected>Select Category</option>
                   <?php if (!empty($categories)): ?>
                     <?php foreach ($categories as $category): ?>
@@ -399,7 +399,7 @@
 
               <!-- Line Chart -->
               <div id="lineChart"></div>
-              
+
               <script>
                 document.addEventListener("DOMContentLoaded", () => {
                   // Initialize chart with fetched data
