@@ -31,10 +31,10 @@ require "DAL/db_config.php";
             <div class="row align-items-end">
               <!-- Zone Selection -->
               <div class="col-md-3 mb-3">
-              <div class="form-group">
-                <select class="form-select" id="zone-select" aria-label="Select Zone">
-                </select>
-              </div>
+                <div class="form-group">
+                  <select class="form-select" id="zone-select" aria-label="Select Zone">
+                  </select>
+                </div>
               </div>
 
               <!-- Block Selection -->
@@ -51,7 +51,7 @@ require "DAL/db_config.php";
               <div class="col-md-3 mb-3">
                 <div class="form-group">
                   <select class="form-select" id="category-select" aria-label="Select Category">
-                   
+
                   </select>
                 </div>
               </div>

@@ -22,7 +22,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
 
-<!-- <script src="./dashboard.js"></script> -->
+<!-- <script src="assets/js/dashboard.js"></script> -->
 <script src="assets/js/main.js"></script>
 <script src="assets/js/custom.js"></script>
 

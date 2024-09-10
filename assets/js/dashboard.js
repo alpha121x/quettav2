@@ -51,6 +51,7 @@ applyFiltersBtn.addEventListener("click", () => {
   });
 });
 
+// fuctions to populate dropdowns on dom load
 $(document).ready(function () {
   // Function to populate Zones
   function populateZones() {
@@ -154,6 +155,7 @@ $(document).ready(function () {
   populateCategories();
   populateLandTypes();
 });
+// end //
 
 // Initialize chart on page load
 document.addEventListener("DOMContentLoaded", () => {
