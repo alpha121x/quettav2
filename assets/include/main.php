@@ -1,3 +1,4 @@
+<?php require "./DAL/fetch_chart_data.php"; ?>
 <main id="main" class="main">
 
   <div class="pagetitle">

@@ -24,43 +24,17 @@ require "DAL/db_config.php";
       </nav>
     </div><!-- End Page Title -->
 
-    <style>
-      .building_img {
-        width: 150px !important;
-        height: 100px !important;
-      }
-    </style>
-
-
     <section class="section">
       <div class="row">
         <div class="col-lg-12">
           <div class="container mt-4">
             <div class="row align-items-end">
               <!-- Zone Selection -->
-              <?php
-              try {
-                $stmt = $pdo->query("SELECT DISTINCT zone_code FROM public.tbl_landuse_f ORDER BY zone_code ASC");
-                $zones = $stmt->fetchAll(PDO::FETCH_ASSOC);
-              } catch (PDOException $e) {
-                echo "Error: " . $e->getMessage();
-              }
-              ?>
               <div class="col-md-3 mb-3">
-                <div class="form-group">
-                  <select class="form-select" id="zone-select" aria-label="Select Zone">
-                    <option selected>Select Zone</option>
-                    <?php if (!empty($zones)): ?>
-                      <?php foreach ($zones as $zone): ?>
-                        <option value="<?= htmlspecialchars($zone['zone_code']); ?>">
-                          <?= htmlspecialchars($zone['zone_code']); ?>
-                        </option>
-                      <?php endforeach; ?>
-                    <?php else: ?>
-                      <option disabled>No Zones Available</option>
-                    <?php endif; ?>
-                  </select>
-                </div>
+              <div class="form-group">
+                <select class="form-select" id="zone-select" aria-label="Select Zone">
+                </select>
+              </div>
               </div>
 
               <!-- Block Selection -->
@@ -74,27 +48,10 @@ require "DAL/db_config.php";
               </div>
 
               <!-- Category Selection -->
-              <?php
-              try {
-                $stmt = $pdo->query("SELECT DISTINCT modification_type FROM public.tbl_landuse_f ORDER BY modification_type ASC");
-                $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
-              } catch (PDOException $e) {
-                echo "Error: " . $e->getMessage();
-              }
-              ?>
               <div class="col-md-3 mb-3">
                 <div class="form-group">
                   <select class="form-select" id="category-select" aria-label="Select Category">
-                    <option selected>Select Category</option>
-                    <?php if (!empty($categories)): ?>
-                      <?php foreach ($categories as $category): ?>
-                        <option value="<?= htmlspecialchars($category['modification_type']); ?>">
-                          <?= htmlspecialchars($category['modification_type']); ?>
-                        </option>
-                      <?php endforeach; ?>
-                    <?php else: ?>
-                      <option disabled>No Categories Available</option>
-                    <?php endif; ?>
+                   
                   </select>
                 </div>
               </div>

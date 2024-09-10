@@ -1074,3 +1074,9 @@ h6 {
   .drawer-active {
     right: 0;
   }
+
+  /* Modal code  */
+  .building_img {
+    width: 150px !important;
+    height: 100px !important;
+  }
