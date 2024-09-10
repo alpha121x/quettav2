@@ -396,15 +396,12 @@
             <div class="card-body">
               <h5 class="card-title">Land Types Chart</h5>
 
+
               <!-- Line Chart -->
               <div id="lineChart"></div>
               
               <script>
                 document.addEventListener("DOMContentLoaded", () => {
-                  // PHP variables injected directly into JavaScript
-                  var landTypes = <?php echo json_encode($landTypes); ?>;
-                  var landCounts = <?php echo json_encode($landCounts); ?>;
-
                   // Initialize chart with fetched data
                   new ApexCharts(document.querySelector("#lineChart"), {
                     series: [{
