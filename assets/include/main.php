@@ -344,7 +344,7 @@
       // Fetch land sub types based on selected land type
       $.ajax({
         type: "POST",
-        url: "DAL/fetch_dropdowns_data.php",  // Updated file path
+        url: "DAL/fetch_dropdowns_data.php", // Updated file path
         data: {
           land_type: landType,
         },
