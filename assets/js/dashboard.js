@@ -172,7 +172,12 @@ document.addEventListener("DOMContentLoaded", () => {
       initReportsChart(data.modificationTypes);
       initPieChart(data.parcelPercentages, data.zoneLabels);
       initLineChart(data.landCounts, data.landTypes);
-      initColumnChart(data.mergeCounts, data.sameCounts, data.splitCounts, data.zones);
+      initColumnChart(
+        data.mergeCounts,
+        data.sameCounts,
+        data.splitCounts,
+        data.zones
+      );
     })
     .catch((error) => {
       console.error("Error fetching chart data:", error);
@@ -364,7 +369,6 @@ function initColumnChart(mergeCounts, sameCounts, splitCounts, zones) {
   // Render the column chart
   columnChart.render();
 }
-
 
 // Open drawer
 openDrawerBtn.addEventListener("click", () => {
