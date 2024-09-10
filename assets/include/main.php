@@ -330,6 +330,7 @@
   </section>
 </main><!-- End #main -->
 
+
 <script>
   // Fetch land sub types when the selected land type changes
   $("#landTypeSelect").on("change", function() {
