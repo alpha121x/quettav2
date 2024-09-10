@@ -383,3 +383,30 @@ closeDrawerBtn.addEventListener("click", () => {
     openDrawerBtn.style.display = "block"; // Show the open button after drawer closes
   }, 300); // Adjust this timeout to match the CSS transition duration
 });
+
+// fetch cards update data //
+$(document).ready(function() {
+  // Fetch data using AJAX
+  $.ajax({
+      url: './DAL/fetch_cards_data.php',
+      method: 'GET',
+      dataType: 'json',
+      success: function(data) {
+          // Check for errors
+          if (data.error) {
+              console.error('Server Error:', data.error);
+          } else {
+              // Update card values
+              $('#total-zones').text(data.totalZones || 'N/A');
+              $('#total-blocks').text(data.totalBlocks || 'N/A');
+              $('#total-parcels').text(data.totalParcels || 'N/A');
+              $('#merge-parcels').text(data.mergeParcels || 'N/A');
+              $('#same-parcels').text(data.sameParcels || 'N/A');
+              $('#split-parcels').text(data.splitParcels || 'N/A');
+          }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+          console.error('AJAX Error:', textStatus, errorThrown);
+      }
+  });
+});
