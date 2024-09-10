@@ -1,17 +1,12 @@
 // Apply filters
 applyFiltersBtn.addEventListener("click", () => {
+
   // Get selected values
   const zoneCode = document.getElementById("zone-select").value;
   const block = document.getElementById("block-select").value;
-  const category = document.querySelector(
-    '[aria-label="Select Category"]'
-  ).value;
-  const landType = document.querySelector(
-    '[aria-label="Select Land Type"]'
-  ).value;
-  const landSubType = document.querySelector(
-    '[aria-label="Select Land Sub Type"]'
-  ).value;
+  const category = document.querySelector('[aria-label="Select Category"]').value;
+  const landType = document.querySelector('[aria-label="Select Land Type"]').value;
+  const landSubType = document.querySelector('[aria-label="Select Land Sub Type"]').value;
 
   // Send AJAX request with the selected filter values
   $.ajax({
@@ -44,6 +39,11 @@ applyFiltersBtn.addEventListener("click", () => {
       setTimeout(() => {
         openDrawerBtn.style.display = "block"; // Show the open button after drawer closes
       }, 300);
+
+
+      var  params = `?zone_code=${zoneCode}&sheet_no=${block}&modification_type=${category}&land_type=${landType}&land_sub_type=${landSubType}`;
+      make_chart(params);
+
     },
     error: function (jqXHR, textStatus, errorThrown) {
       console.error("AJAX Error: " + textStatus);
@@ -51,50 +51,128 @@ applyFiltersBtn.addEventListener("click", () => {
   });
 });
 
+
+function make_chart(params){
+  // Now make another request to update the chart with filtered data
+  $.ajax({
+    url: "DAL/fetch_chart_data.php"+params, // Make sure you have a file to handle chart data
+    method: "GET",
+    dataType: "json",
+    // data: {
+    //   zone_code: zoneCode,
+    //   sheet_no: block,
+    //   modification_type: category,
+    //   land_type: landType,
+    //   land_sub_type: landSubType,
+    // },
+    success: function (chartData) {
+      console.log("ASIM");
+      console.log(chartData);
+      if (chartData.error) {
+        console.error(chartData.error);
+      } else {
+        // Destroy the previous chart
+        if (window.reportsChart) {
+          window.reportsChart.destroy();
+        }
+
+        // Create a new chart with the filtered data
+        window.reportsChart = new ApexCharts(
+          document.querySelector("#reportsChart"),
+          {
+            series: [
+              {
+                name: "Modification Types",
+                data: chartData.map((item) => parseInt(item.count)),
+              },
+            ],
+            chart: {
+              height: 350,
+              type: "bar",
+              toolbar: {
+                show: false,
+              },
+            },
+            colors: ["#28A745"],
+            fill: {
+              type: "solid",
+            },
+            dataLabels: {
+              enabled: false,
+            },
+            stroke: {
+              curve: "smooth",
+              width: 2,
+            },
+            xaxis: {
+              categories: chartData.map((item) => item.modification_type),
+              title: {
+                text: "Modification Types",
+              },
+            },
+            yaxis: {
+              title: {
+                text: "Counts",
+              },
+            },
+          }
+        );
+
+        // Render the new chart
+        window.reportsChart.render();
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.error("AJAX Error: " + textStatus);
+    },
+  });
+}
+
+// Initialize chart on page load
 document.addEventListener("DOMContentLoaded", () => {
-  // Chart for Modification Types
-  new ApexCharts(document.querySelector("#reportsChart"), {
-    series: [
-      {
-        name: "Modification Types",
-        data: modificationTypes.map((item) => parseInt(item.count)),
+  window.reportsChart = new ApexCharts(
+    document.querySelector("#reportsChart"),
+    {
+      series: [
+        {
+          name: "Modification Types",
+          data: modificationTypes.map((item) => parseInt(item.count)),
+        },
+      ],
+      chart: {
+        height: 350,
+        type: "bar",
+        toolbar: {
+          show: false,
+        },
       },
-    ],
-    chart: {
-      height: 350,
-      type: "bar",
-      toolbar: {
-        show: false,
+      colors: ["#28A745"],
+      fill: {
+        type: "solid",
       },
-    },
-    colors: ["#28A745"],
-    fill: {
-      type: "solid",
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      curve: "smooth",
-      width: 2,
-    },
-    xaxis: {
-      categories: modificationTypes.map((item) => item.modification_type),
-      title: {
-        text: "Modification Types",
+      dataLabels: {
+        enabled: false,
       },
-    },
-    yaxis: {
-      title: {
-        text: "Counts",
+      stroke: {
+        curve: "smooth",
+        width: 2,
       },
-    },
-    tooltip: {
-      x: {
-        format: "dd/MM/yy HH:mm",
+      xaxis: {
+        categories: modificationTypes.map((item) => item.modification_type),
+        title: {
+          text: "Modification Types",
+        },
       },
-    },
-  }).render();
+      yaxis: {
+        title: {
+          text: "Counts",
+        },
+      },
+    }
+  );
+
+  // Render the chart initially
+  window.reportsChart.render();
 });
 
 document.addEventListener("DOMContentLoaded", () => {

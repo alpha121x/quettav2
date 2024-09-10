@@ -2,6 +2,15 @@
 // Include your database connection here
 include("db_config.php");
 
+  // Fetch filters from POST data if available
+  $zone_code = isset($_POST['zone_code']) && $_POST['zone_code'] !== "Select Zone" ? $_POST['zone_code'] : null;
+  $sheet_no = isset($_POST['sheet_no']) && $_POST['sheet_no'] !== "Select Block" ? $_POST['sheet_no'] : null;
+  $land_type = isset($_POST['land_type']) && $_POST['land_type'] !== "Select Land Type" ? $_POST['land_type'] : null;
+  $land_sub_type = isset($_POST['land_sub_type']) && $_POST['land_sub_type'] !== "Select Land Sub Type" ? $_POST['land_sub_type'] : null;
+  $modification_type = isset($_POST['modification_type']) && $_POST['modification_type'] !== "Select Modification Type" ? $_POST['modification_type'] : null;
+
+
+
 try {
     // Function to fetch modification types count with filters
     function getModificationTypesCount($pdo, $zone_code = null, $sheet_no = null, $land_type = null, $land_sub_type = null, $modification_type = null) {
@@ -25,6 +34,8 @@ try {
         }
 
         $query .= " GROUP BY modification_type";
+    //    echo $query;
+        // exit();
         $stmt = $pdo->prepare($query);
         
         // Bind parameters
@@ -195,17 +206,12 @@ try {
         return ['zones' => $zones, 'mergeCounts' => $mergeCounts, 'sameCounts' => $sameCounts, 'splitCounts' => $splitCounts];
     }
 
-    // Fetch filters from POST data if available
-    $zone_code = isset($_POST['zone_code']) && $_POST['zone_code'] !== "Select Zone" ? $_POST['zone_code'] : null;
-    $sheet_no = isset($_POST['sheet_no']) && $_POST['sheet_no'] !== "Select Block" ? $_POST['sheet_no'] : null;
-    $land_type = isset($_POST['land_type']) && $_POST['land_type'] !== "Select Land Type" ? $_POST['land_type'] : null;
-    $land_sub_type = isset($_POST['land_sub_type']) && $_POST['land_sub_type'] !== "Select Land Sub Type" ? $_POST['land_sub_type'] : null;
-    $modification_type = isset($_POST['modification_type']) && $_POST['modification_type'] !== "Select Modification Type" ? $_POST['modification_type'] : null;
-
+  
     // Fetching all data with filters
     $modificationTypes = getModificationTypesCount($pdo, $zone_code, $sheet_no, $land_type, $land_sub_type, $modification_type);
 
     $zoneParcelData = getZoneParcelData($pdo, $zone_code, $sheet_no, $land_type, $land_sub_type, $modification_type);
+    
     $percentages = $zoneParcelData['percentages'];
     $zoneLabels = $zoneParcelData['zoneLabels'];
 
@@ -219,18 +225,27 @@ try {
     $sameCounts = $modificationCountsByZone['sameCounts'];
     $splitCounts = $modificationCountsByZone['splitCounts'];
 
+    
+    $array_result = array();
+
+    array_push($array_result,$modificationTypes);
+    array_push($array_result,$percentages);
+
+    echo json_encode($array_result);
+    
+    
     // Pass data to JavaScript
-    echo "<script>
-            const modificationTypes = " . json_encode($modificationTypes) . ";
-            const parcelPercentages = " . json_encode($percentages) . ";
-            const zoneLabels = " . json_encode($zoneLabels) . ";
-            const landTypes = " . json_encode($landTypes) . ";
-            const landCounts = " . json_encode($landCounts) . ";
-            const zones = " . json_encode($zones) . ";
-            const mergeCounts = " . json_encode($mergeCounts) . ";
-            const sameCounts = " . json_encode($sameCounts) . ";
-            const splitCounts = " . json_encode($splitCounts) . ";
-        </script>";
+    // echo "<script>
+    //         const modificationTypes = " . json_encode($modificationTypes) . ";
+    //         const parcelPercentages = " . json_encode($percentages) . ";
+    //         const zoneLabels = " . json_encode($zoneLabels) . ";
+    //         const landTypes = " . json_encode($landTypes) . ";
+    //         const landCounts = " . json_encode($landCounts) . ";
+    //         const zones = " . json_encode($zones) . ";
+    //         const mergeCounts = " . json_encode($mergeCounts) . ";
+    //         const sameCounts = " . json_encode($sameCounts) . ";
+    //         const splitCounts = " . json_encode($splitCounts) . ";
+    //     </script>";
 } catch (PDOException $e) {
     echo "<script>console.error('Error: " . $e->getMessage() . "');</script>";
 }
