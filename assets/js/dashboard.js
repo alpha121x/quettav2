@@ -155,59 +155,78 @@ $(document).ready(function () {
   populateCategories();
   populateLandTypes();
 });
-// end //
+// end... //
 
-// Initialize chart on page load
 document.addEventListener("DOMContentLoaded", () => {
-  window.reportsChart = new ApexCharts(
-    document.querySelector("#reportsChart"),
-    {
-      series: [
-        {
-          name: "Modification Types",
-          data: modificationTypes.map((item) => parseInt(item.count)),
-        },
-      ],
-      chart: {
-        height: 350,
-        type: "bar",
-        toolbar: {
-          show: false,
-        },
-      },
-      colors: ["#28A745"],
-      fill: {
-        type: "solid",
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      stroke: {
-        curve: "smooth",
-        width: 2,
-      },
-      xaxis: {
-        categories: modificationTypes.map((item) => item.modification_type),
-        title: {
-          text: "Modification Types",
-        },
-      },
-      yaxis: {
-        title: {
-          text: "Counts",
-        },
-      },
-    }
-  );
+  // Perform AJAX request to fetch data for charts
+  fetch("DAL/fetch_chart_data.php")
+    .then((response) => response.json())
+    .then((data) => {
+      // Ensure data is not empty or error
+      if (data.error) {
+        console.error("Error fetching chart data:", data.error);
+        return;
+      }
 
-  // Render the chart initially
-  window.reportsChart.render();
+      // Initialize charts with the fetched data
+      initReportsChart(data.modificationTypes);
+      initPieChart(data.parcelPercentages, data.zoneLabels);
+      initLineChart(data.landCounts, data.landTypes);
+      initColumnChart(data.mergeCounts, data.sameCounts, data.splitCounts, data.zones);
+    })
+    .catch((error) => {
+      console.error("Error fetching chart data:", error);
+    });
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Initialize the chart with the PHP-generated data
-  new ApexCharts(document.querySelector("#pieChart"), {
-    series: parcelPercentages, // PHP data
+// Function to initialize the reports chart
+function initReportsChart(modificationTypes) {
+  let reportsChart = new ApexCharts(document.querySelector("#reportsChart"), {
+    series: [
+      {
+        name: "Modification Types",
+        data: modificationTypes.map((item) => parseInt(item.count)),
+      },
+    ],
+    chart: {
+      height: 350,
+      type: "bar",
+      toolbar: {
+        show: false,
+      },
+    },
+    colors: ["#28A745"],
+    fill: {
+      type: "solid",
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      curve: "smooth",
+      width: 2,
+    },
+    xaxis: {
+      categories: modificationTypes.map((item) => item.modification_type),
+      title: {
+        text: "Modification Types",
+      },
+    },
+    yaxis: {
+      title: {
+        text: "Counts",
+      },
+    },
+  });
+
+  // Render the chart
+  reportsChart.render();
+}
+
+// Function to initialize the pie chart
+function initPieChart(parcelPercentages, zoneLabels) {
+  let pieChart = new ApexCharts(document.querySelector("#pieChart"), {
+    series: parcelPercentages, // Data for pie chart
     chart: {
       height: 350,
       type: "pie",
@@ -215,7 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
         show: true,
       },
     },
-    labels: zoneLabels, // PHP data
+    labels: zoneLabels, // Labels for pie chart
     responsive: [
       {
         breakpoint: 480,
@@ -229,12 +248,15 @@ document.addEventListener("DOMContentLoaded", () => {
         },
       },
     ],
-  }).render();
-});
+  });
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Initialize chart with fetched data
-  new ApexCharts(document.querySelector("#lineChart"), {
+  // Render the pie chart
+  pieChart.render();
+}
+
+// Function to initialize the line chart
+function initLineChart(landCounts, landTypes) {
+  let lineChart = new ApexCharts(document.querySelector("#lineChart"), {
     series: [
       {
         name: "Land Count",
@@ -277,23 +299,27 @@ document.addEventListener("DOMContentLoaded", () => {
         },
       },
     },
-  }).render();
-});
+  });
 
-document.addEventListener("DOMContentLoaded", () => {
-  new ApexCharts(document.querySelector("#columnChart"), {
+  // Render the line chart
+  lineChart.render();
+}
+
+// Function to initialize the column chart
+function initColumnChart(mergeCounts, sameCounts, splitCounts, zones) {
+  let columnChart = new ApexCharts(document.querySelector("#columnChart"), {
     series: [
       {
         name: "Merge",
-        data: mergeCounts, // PHP data
+        data: mergeCounts, // Merge data
       },
       {
         name: "Same",
-        data: sameCounts, // PHP data
+        data: sameCounts, // Same data
       },
       {
         name: "Split",
-        data: splitCounts, // PHP data
+        data: splitCounts, // Split data
       },
     ],
     chart: {
@@ -316,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
       colors: ["transparent"],
     },
     xaxis: {
-      categories: zones, // PHP data
+      categories: zones, // Zones for x-axis
     },
     yaxis: {
       title: {
@@ -333,8 +359,12 @@ document.addEventListener("DOMContentLoaded", () => {
         },
       },
     },
-  }).render();
-});
+  });
+
+  // Render the column chart
+  columnChart.render();
+}
+
 
 // Open drawer
 openDrawerBtn.addEventListener("click", () => {

@@ -228,17 +228,17 @@ try {
     $splitCounts = $modificationCountsByZone['splitCounts'];
 
 
-    $array_result = array();
-
-    array_push($array_result, $modificationTypes);
-    array_push($array_result, $percentages);
-    array_push($array_result, $zoneLabels);
-    array_push($array_result, $landTypes);
-    array_push($array_result, $landCounts);
-    array_push($array_result, $zones);
-    array_push($array_result, $mergeCounts);
-    array_push($array_result, $sameCounts);
-    array_push($array_result, $splitCounts);
+    $array_result = [
+        'modificationTypes' => $modificationTypes,
+        'parcelPercentages' => $zoneParcelData['percentages'],
+        'zoneLabels' => $zoneParcelData['zoneLabels'],
+        'landTypes' => array_column($landTypesData, 'land_type'),
+        'landCounts' => array_map('intval', array_column($landTypesData, 'land_count')),
+        'zones' => array_map(fn($zone) => 'Zone ' . $zone, $modificationCountsByZone['zones']),
+        'mergeCounts' => $modificationCountsByZone['mergeCounts'],
+        'sameCounts' => $modificationCountsByZone['sameCounts'],
+        'splitCounts' => $modificationCountsByZone['splitCounts'],
+    ];
 
     echo json_encode($array_result);
 
