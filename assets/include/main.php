@@ -274,6 +274,84 @@
               <div id="reportsChart"></div>
 
               <script>
+
+              </script>
+
+              <!-- End Line Chart -->
+
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Map</h5>
+
+              <div id="map" class="contact-map">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d52599.105009580575!2d66.9551262983524!3d30.17984019470825!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ed2e4a21261a2ef%3A0x6f7d937d15cb23a7!2sQuetta%2C%20Balochistan!5e0!3m2!1sen!2s!4v1693245110924"
+                  width="100%"
+                  height="360"
+                  frameborder="0"
+                  style="border:0"
+                  allowfullscreen>
+                </iframe>
+
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Zone Parcels Chart</h5>
+
+              <!-- Pie Chart -->
+              <div id="pieChart"></div>
+
+              <script>
+
+              </script>
+              <!-- End Pie Chart -->
+
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Land Types Chart</h5>
+
+
+              <!-- Line Chart -->
+              <div id="lineChart"></div>
+
+              <script>
+
+              </script>
+              <!-- End Line Chart -->
+
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Zone Modification Types Chart</h5>
+
+              <!-- Column Chart -->
+              <div id="columnChart"></div>
+
+              <script>
                 document.addEventListener("DOMContentLoaded", () => {
                   // Chart for Modification Types
                   new ApexCharts(document.querySelector("#reportsChart"), {
@@ -317,47 +395,7 @@
                     }
                   }).render();
                 });
-              </script>
 
-              <!-- End Line Chart -->
-
-            </div>
-
-          </div>
-        </div>
-
-        <div class="col-lg-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Map</h5>
-
-              <div id="map" class="contact-map">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d52599.105009580575!2d66.9551262983524!3d30.17984019470825!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ed2e4a21261a2ef%3A0x6f7d937d15cb23a7!2sQuetta%2C%20Balochistan!5e0!3m2!1sen!2s!4v1693245110924"
-                  width="100%"
-                  height="360"
-                  frameborder="0"
-                  style="border:0"
-                  allowfullscreen>
-                </iframe>
-
-              </div>
-
-
-            </div>
-          </div>
-        </div>
-
-
-        <div class="col-lg-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Zone Parcels Chart</h5>
-
-              <!-- Pie Chart -->
-              <div id="pieChart"></div>
-
-              <script>
                 document.addEventListener("DOMContentLoaded", () => {
                   // Initialize the chart with the PHP-generated data
                   new ApexCharts(document.querySelector("#pieChart"), {
@@ -383,24 +421,9 @@
                     }]
                   }).render();
                 });
-              </script>
-              <!-- End Pie Chart -->
-
-            </div>
-          </div>
-        </div>
 
 
-        <div class="col-lg-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Land Types Chart</h5>
 
-
-              <!-- Line Chart -->
-              <div id="lineChart"></div>
-
-              <script>
                 document.addEventListener("DOMContentLoaded", () => {
                   // Initialize chart with fetched data
                   new ApexCharts(document.querySelector("#lineChart"), {
@@ -446,22 +469,8 @@
                     }
                   }).render();
                 });
-              </script>
-              <!-- End Line Chart -->
 
-            </div>
-          </div>
-        </div>
 
-        <div class="col-lg-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Zone Modification Types Chart</h5>
-
-              <!-- Column Chart -->
-              <div id="columnChart"></div>
-
-              <script>
                 document.addEventListener("DOMContentLoaded", () => {
                   new ApexCharts(document.querySelector("#columnChart"), {
                     series: [{
