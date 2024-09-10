@@ -1,12 +1,17 @@
 // Apply filters
 applyFiltersBtn.addEventListener("click", () => {
-
   // Get selected values
   const zoneCode = document.getElementById("zone-select").value;
   const block = document.getElementById("block-select").value;
-  const category = document.querySelector('[aria-label="Select Category"]').value;
-  const landType = document.querySelector('[aria-label="Select Land Type"]').value;
-  const landSubType = document.querySelector('[aria-label="Select Land Sub Type"]').value;
+  const category = document.querySelector(
+    '[aria-label="Select Category"]'
+  ).value;
+  const landType = document.querySelector(
+    '[aria-label="Select Land Type"]'
+  ).value;
+  const landSubType = document.querySelector(
+    '[aria-label="Select Land Sub Type"]'
+  ).value;
 
   // Send AJAX request with the selected filter values
   $.ajax({
@@ -39,11 +44,6 @@ applyFiltersBtn.addEventListener("click", () => {
       setTimeout(() => {
         openDrawerBtn.style.display = "block"; // Show the open button after drawer closes
       }, 300);
-
-
-      var  params = `?zone_code=${zoneCode}&sheet_no=${block}&modification_type=${category}&land_type=${landType}&land_sub_type=${landSubType}`;
-      make_chart(params);
-
     },
     error: function (jqXHR, textStatus, errorThrown) {
       console.error("AJAX Error: " + textStatus);
@@ -51,82 +51,109 @@ applyFiltersBtn.addEventListener("click", () => {
   });
 });
 
+$(document).ready(function () {
+  // Function to populate Zones
+  function populateZones() {
+    $.ajax({
+      url: "DAL/get_zones.php",
+      type: "GET",
+      data: { type: "zones" },
+      success: function (response) {
+        // Check if response is already an object or a string (JSON string)
+        let zones =
+          typeof response === "string" ? JSON.parse(response) : response;
 
-function make_chart(params){
-  // Now make another request to update the chart with filtered data
-  $.ajax({
-    url: "DAL/fetch_chart_data.php"+params, // Make sure you have a file to handle chart data
-    method: "GET",
-    dataType: "json",
-    // data: {
-    //   zone_code: zoneCode,
-    //   sheet_no: block,
-    //   modification_type: category,
-    //   land_type: landType,
-    //   land_sub_type: landSubType,
-    // },
-    success: function (chartData) {
-      console.log("ASIM");
-      console.log(chartData);
-      if (chartData.error) {
-        console.error(chartData.error);
-      } else {
-        // Destroy the previous chart
-        if (window.reportsChart) {
-          window.reportsChart.destroy();
+        let zoneSelect = $("#zone-select");
+        zoneSelect.empty(); // Clear any existing options
+        zoneSelect.append("<option selected>Select Zone</option>"); // Default option
+
+        // Check if zones were retrieved successfully
+        if (Array.isArray(zones) && zones.length > 0) {
+          zones.forEach(function (zone) {
+            // Since only 'zone_code' is being fetched, we will use it both for value and display.
+            zoneSelect.append(
+              `<option value="${zone.zone_code}">${zone.zone_code}</option>`
+            );
+          });
+        } else {
+          console.error("No zones found or response is invalid.");
         }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error fetching zones: ", error);
+      },
+    });
+  }
 
-        // Create a new chart with the filtered data
-        window.reportsChart = new ApexCharts(
-          document.querySelector("#reportsChart"),
-          {
-            series: [
-              {
-                name: "Modification Types",
-                data: chartData.map((item) => parseInt(item.count)),
-              },
-            ],
-            chart: {
-              height: 350,
-              type: "bar",
-              toolbar: {
-                show: false,
-              },
-            },
-            colors: ["#28A745"],
-            fill: {
-              type: "solid",
-            },
-            dataLabels: {
-              enabled: false,
-            },
-            stroke: {
-              curve: "smooth",
-              width: 2,
-            },
-            xaxis: {
-              categories: chartData.map((item) => item.modification_type),
-              title: {
-                text: "Modification Types",
-              },
-            },
-            yaxis: {
-              title: {
-                text: "Counts",
-              },
-            },
-          }
-        );
+  function populateCategories() {
+    $.ajax({
+      url: "DAL/get_categories.php", // Make sure the path is correct
+      type: "GET",
+      data: { type: "categories" },
+      success: function (response) {
+        // Check if response is already an object or a string (JSON string)
+        let categories =
+          typeof response === "string" ? JSON.parse(response) : response;
 
-        // Render the new chart
-        window.reportsChart.render();
-      }
-    },
-    error: function (jqXHR, textStatus, errorThrown) {
-      console.error("AJAX Error: " + textStatus);
-    },
-  });
-}
+        let categorySelect = $("#category-select");
+        categorySelect.empty(); // Clear any existing options
+        categorySelect.append("<option selected>Select Category</option>"); // Default option
+
+        // Check if categories were retrieved successfully
+        if (Array.isArray(categories) && categories.length > 0) {
+          categories.forEach(function (category) {
+            // Since only 'modification_type' is being fetched, we will use it both for value and display.
+            categorySelect.append(
+              `<option value="${category.modification_type}">${category.modification_type}</option>`
+            );
+          });
+        } else {
+          console.error("No categories found or response is invalid.");
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error fetching categories: ", error);
+      },
+    });
+  }
+
+  function populateLandTypes() {
+    $.ajax({
+      url: "DAL/get_land_types.php", // Make sure the path is correct
+      type: "GET",
+      data: { type: "land_types" },
+      success: function (response) {
+        // Check if response is already an object or a string (JSON string)
+        let landTypes =
+          typeof response === "string" ? JSON.parse(response) : response;
+
+        let landTypeSelect = $("#landTypeSelect");
+        landTypeSelect.empty(); // Clear any existing options
+        landTypeSelect.append("<option selected>Select Land Type</option>"); // Default option
+
+        // Check if land types were retrieved successfully
+        if (Array.isArray(landTypes) && landTypes.length > 0) {
+          landTypes.forEach(function (landType) {
+            // Since only 'land_type' is being fetched, we will use it both for value and display.
+            landTypeSelect.append(
+              `<option value="${landType.land_type}">${landType.land_type}</option>`
+            );
+          });
+        } else {
+          console.error("No land types found or response is invalid.");
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error fetching land types: ", error);
+      },
+    });
+  }
+
+  // Populate both dropdowns on page load
+  populateZones();
+  populateCategories();
+  populateLandTypes();
+});
 
 // Initialize chart on page load
 document.addEventListener("DOMContentLoaded", () => {

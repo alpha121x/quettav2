@@ -1,5 +1,3 @@
-<?php include "./DAL/fetch_chart_data.php" ?>
-<?php include "./DAL/fetch_dropdowns_data.php"?>
 <main id="main" class="main">
 
   <div class="pagetitle">
@@ -36,16 +34,6 @@
             <div class="mb-3">
               <div class="form-group">
                 <select class="form-select" id="zone-select" aria-label="Select Zone">
-                  <option selected>Select Zone</option>
-                  <?php if (!empty($zones)): ?>
-                    <?php foreach ($zones as $zone): ?>
-                      <option value="<?= htmlspecialchars($zone['zone_code']); ?>">
-                        <?= htmlspecialchars($zone['zone_code']); ?>
-                      </option>
-                    <?php endforeach; ?>
-                  <?php else: ?>
-                    <option disabled>No Zones Available</option>
-                  <?php endif; ?>
                 </select>
               </div>
             </div>
@@ -64,42 +52,17 @@
             <div class="mb-3">
               <div class="form-group">
                 <select class="form-select" id="category-select" aria-label="Select Category">
-                  <option selected>Select Category</option>
-                  <?php if (!empty($categories)): ?>
-                    <?php foreach ($categories as $category): ?>
-                      <option value="<?= htmlspecialchars($category['modification_type']); ?>">
-                        <?= htmlspecialchars($category['modification_type']); ?>
-                      </option>
-                    <?php endforeach; ?>
-                  <?php else: ?>
-                    <option disabled>No Categories Available</option>
-                  <?php endif; ?>
+               
                 </select>
               </div>
             </div>
 
             <!-- Land Type Selection -->
-            <?php
-            try {
-              $stmt = $pdo->query("SELECT DISTINCT land_type FROM public.tbl_landuse_f ORDER BY land_type ASC");
-              $landTypes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            } catch (PDOException $e) {
-              echo "Error: " . $e->getMessage();
-            }
-            ?>
             <div class="mb-3">
               <div class="form-group">
                 <select id="landTypeSelect" class="form-select" aria-label="Select Land Type">
                   <option selected>Select Land Type</option>
-                  <?php if (!empty($landTypes)): ?>
-                    <?php foreach ($landTypes as $landType): ?>
-                      <option value="<?= htmlspecialchars($landType['land_type']); ?>">
-                        <?= htmlspecialchars($landType['land_type']); ?>
-                      </option>
-                    <?php endforeach; ?>
-                  <?php else: ?>
-                    <option disabled>No Land Types Available</option>
-                  <?php endif; ?>
+               
                 </select>
               </div>
             </div>
