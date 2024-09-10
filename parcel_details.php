@@ -84,7 +84,7 @@ require "DAL/db_config.php";
               ?>
               <div class="col-md-3 mb-3">
                 <div class="form-group">
-                  <select class="form-select" aria-label="Select Category">
+                  <select class="form-select" id="category-select" aria-label="Select Category">
                     <option selected>Select Category</option>
                     <?php if (!empty($categories)): ?>
                       <?php foreach ($categories as $category): ?>
