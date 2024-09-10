@@ -10,75 +10,6 @@
     </nav>
   </div><!-- End Page Title -->
 
-  <style>
-    /* Filter button styling */
-    .filter-button {
-      position: fixed;
-      top: 50%;
-      right: 25px;
-      transform: translateY(-50%) rotate(90deg);
-      transform-origin: right center;
-      padding: 10px 20px;
-      background-color: #28A745;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      z-index: 1000;
-    }
-
-
-    /* Drawer styling */
-    .filter-drawer {
-      position: fixed;
-      top: 0;
-      right: -100%;
-      width: 300px;
-      height: 100%;
-      background-color: white;
-      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
-      transition: right 0.3s ease;
-      z-index: 999;
-    }
-
-    /* Content inside drawer */
-    .drawer-content {
-      padding: 20px;
-    }
-
-    /* Close button styling */
-    .close-button {
-      background: none;
-      border: none;
-      color: #333;
-      font-size: 23px;
-      cursor: pointer;
-      position: absolute;
-      top: 10px;
-      right: 10px;
-    }
-
-    /* Apply button styling */
-    /* Center the button */
-    .apply-button {
-      display: block;
-      margin: 20px auto;
-      /* Centers the button horizontally */
-      background-color: #28a745;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-
-
-    /* Show the drawer when active */
-    .drawer-active {
-      right: 0;
-    }
-  </style>
-
   <section class="section dashboard">
     <div class="row">
 
@@ -331,15 +262,3 @@
 </main><!-- End #main -->
 
 <script src="assets/js/dashboard.js"></script>
-
-
-<script>
-  
-
- 
-</script>
-
-// charts scripts //
-<script>
-  
-</script>
