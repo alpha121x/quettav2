@@ -56,7 +56,7 @@ $(document).ready(function () {
   // Function to populate Zones
   function populateZones() {
     $.ajax({
-      url: "DAL/get_zones.php",
+      url: "DAL/onload_script.php?type=zones",
       type: "GET",
       data: { type: "zones" },
       success: function (response) {
@@ -88,7 +88,7 @@ $(document).ready(function () {
 
   function populateCategories() {
     $.ajax({
-      url: "DAL/get_categories.php", // Make sure the path is correct
+      url: "DAL/onload_script.php?type=categories", // Make sure the path is correct
       type: "GET",
       data: { type: "categories" },
       success: function (response) {
@@ -120,7 +120,7 @@ $(document).ready(function () {
 
   function populateLandTypes() {
     $.ajax({
-      url: "DAL/get_land_types.php", // Make sure the path is correct
+      url: "DAL/onload_script.php?type=land_types", // Make sure the path is correct
       type: "GET",
       data: { type: "land_types" },
       success: function (response) {
