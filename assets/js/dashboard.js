@@ -183,10 +183,9 @@ $(document).ready(() => {
     },
     error: (xhr, status, error) => {
       console.error("Error fetching chart data:", error);
-    }
+    },
   });
 });
-
 
 // Function to initialize the reports chart
 function initReportsChart(modificationTypes) {
@@ -374,7 +373,6 @@ function initColumnChart(mergeCounts, sameCounts, splitCounts, zones) {
   columnChart.render();
 }
 
-
 // Open drawer
 openDrawerBtn.addEventListener("click", () => {
   filterDrawer.classList.add("drawer-active");
@@ -390,28 +388,255 @@ closeDrawerBtn.addEventListener("click", () => {
 });
 
 // fetch cards update data //
-$(document).ready(function() {
+$(document).ready(function () {
   // Fetch data using AJAX
   $.ajax({
-      url: 'DAL/fetch_cards_data.php',
-      method: 'POST',
-      dataType: 'json',
-      success: function(data) {
-          // Check for errors
-          if (data.error) {
-              console.error('Server Error:', data.error);
-          } else {
-              // Update card values
-              $('#total-zones').text(data.totalZones || 'N/A');
-              $('#total-blocks').text(data.totalBlocks || 'N/A');
-              $('#total-parcels').text(data.totalParcels || 'N/A');
-              $('#merge-parcels').text(data.mergeParcels || 'N/A');
-              $('#same-parcels').text(data.sameParcels || 'N/A');
-              $('#split-parcels').text(data.splitParcels || 'N/A');
-          }
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-          console.error('AJAX Error:', textStatus, errorThrown);
+    url: "DAL/fetch_cards_data.php",
+    method: "POST",
+    dataType: "json",
+    success: function (data) {
+      // Check for errors
+      if (data.error) {
+        console.error("Server Error:", data.error);
+      } else {
+        // Update card values
+        $("#total-zones").text(data.totalZones || "N/A");
+        $("#total-blocks").text(data.totalBlocks || "N/A");
+        $("#total-parcels").text(data.totalParcels || "N/A");
+        $("#merge-parcels").text(data.mergeParcels || "N/A");
+        $("#same-parcels").text(data.sameParcels || "N/A");
+        $("#split-parcels").text(data.splitParcels || "N/A");
       }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.error("AJAX Error:", textStatus, errorThrown);
+    },
   });
 });
+
+// Store references to the chart instances
+let reportsChart, pieChart, lineChart, columnChart;
+
+applyFiltersBtn.addEventListener("click", () => {
+  // Get selected values from the filters
+  const zoneCode = document.getElementById("zone-select").value;
+  const block = document.getElementById("block-select").value;
+  const category = document.querySelector(
+    '[aria-label="Select Category"]'
+  ).value;
+  const landType = document.querySelector(
+    '[aria-label="Select Land Type"]'
+  ).value;
+  const landSubType = document.querySelector(
+    '[aria-label="Select Land Sub Type"]'
+  ).value;
+
+  // Create the URL with query parameters
+  let url = `DAL/fetch_chart_data.php?zone_code=${zoneCode}&block=${block}&category=${category}&land_type=${landType}&land_sub_type=${landSubType}`;
+
+  // Perform the AJAX request to fetch data with parameters
+  fetch(url)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      // Check if there's any error in the response
+      if (data.error) {
+        console.error("Error fetching data:", data.error);
+        return;
+      }
+
+      // Clear existing charts
+      if (reportsChart) reportsChart.destroy();
+      if (pieChart) pieChart.destroy();
+      if (lineChart) lineChart.destroy();
+      if (columnChart) columnChart.destroy();
+
+      // Initialize charts with the fetched data
+      reportsChart = initReportsChart(data.modificationTypes);
+      pieChart = initPieChart(data.parcelPercentages, data.zoneLabels);
+      lineChart = initLineChart(data.landCounts, data.landTypes);
+      columnChart = initColumnChart(
+        data.mergeCounts,
+        data.sameCounts,
+        data.splitCounts,
+        data.zones
+      );
+    })
+    .catch((error) => {
+      console.error("Error fetching chart data:", error);
+    });
+});
+
+// Function to initialize the reports chart
+function initReportsChart(modificationTypes) {
+  return new ApexCharts(document.querySelector("#reportsChart"), {
+    series: [
+      {
+        name: "Modification Types",
+        data: modificationTypes.map((item) => parseInt(item.count)),
+      },
+    ],
+    chart: {
+      height: 350,
+      type: "bar",
+      toolbar: {
+        show: false,
+      },
+    },
+    colors: ["#28A745"],
+    fill: {
+      type: "solid",
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      curve: "smooth",
+      width: 2,
+    },
+    xaxis: {
+      categories: modificationTypes.map((item) => item.modification_type),
+      title: {
+        text: "Modification Types",
+      },
+    },
+    yaxis: {
+      title: {
+        text: "Counts",
+      },
+    },
+  }).render();
+}
+
+// Function to initialize the pie chart
+function initPieChart(parcelPercentages, zoneLabels) {
+  return new ApexCharts(document.querySelector("#pieChart"), {
+    series: parcelPercentages,
+    chart: {
+      height: 350,
+      type: "pie",
+      toolbar: {
+        show: true,
+      },
+    },
+    labels: zoneLabels,
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200,
+          },
+          legend: {
+            position: "bottom",
+          },
+        },
+      },
+    ],
+  }).render();
+}
+
+// Function to initialize the line chart
+function initLineChart(landCounts, landTypes) {
+  return new ApexCharts(document.querySelector("#lineChart"), {
+    series: [
+      {
+        name: "Land Count",
+        data: landCounts,
+      },
+    ],
+    chart: {
+      height: 350,
+      type: "line",
+      zoom: {
+        enabled: false,
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      curve: "smooth",
+    },
+    grid: {
+      row: {
+        colors: ["#f3f3f3", "transparent"],
+        opacity: 0.5,
+      },
+    },
+    xaxis: {
+      categories: landTypes,
+      title: {
+        text: "Land Types",
+      },
+    },
+    yaxis: {
+      title: {
+        text: "Land Count",
+      },
+      tickAmount: 5,
+      labels: {
+        formatter: function (value) {
+          return value.toFixed(0);
+        },
+      },
+    },
+  }).render();
+}
+
+// Function to initialize the column chart
+function initColumnChart(mergeCounts, sameCounts, splitCounts, zones) {
+  return new ApexCharts(document.querySelector("#columnChart"), {
+    series: [
+      {
+        name: "Merge",
+        data: mergeCounts,
+      },
+      {
+        name: "Same",
+        data: sameCounts,
+      },
+      {
+        name: "Split",
+        data: splitCounts,
+      },
+    ],
+    chart: {
+      type: "bar",
+      height: 350,
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: "55%",
+        endingShape: "rounded",
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      show: true,
+      width: 2,
+      colors: ["transparent"],
+    },
+    xaxis: {
+      categories: zones,
+    },
+    yaxis: {
+      title: {
+        text: "Count of Modified Parcels",
+      },
+    },
+    fill: {
+      opacity: 1,
+    },
+    tooltip: {
+      y: {
+        formatter: function (val) {
+          return val + " parcels";
+        },
+      },
+    },
+  }).render();
+}

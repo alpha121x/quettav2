@@ -2,65 +2,47 @@
 // Include your database connection here
 include("db_config.php");
 
+// Fetch filters from GET data if available
+$zone_code = isset($_GET['zone_code']) && $_GET['zone_code'] !== "Select Zone" ? $_GET['zone_code'] : null;
+$sheet_no = isset($_GET['sheet_no']) && $_GET['sheet_no'] !== "Select Block" ? $_GET['sheet_no'] : null;
+$land_type = isset($_GET['land_type']) && $_GET['land_type'] !== "Select Land Type" ? $_GET['land_type'] : null;
+$land_sub_type = isset($_GET['land_sub_type']) && $_GET['land_sub_type'] !== "Select Land Sub Type" ? $_GET['land_sub_type'] : null;
+$modification_type = isset($_GET['modification_type']) && $_GET['modification_type'] !== "Select Modification Type" ? $_GET['modification_type'] : null;
+
 try {
-    // Get filter parameters
-    $zoneCode = $_GET['zone_code'] ?? '';
-    $landType = $_GET['land_type'] ?? ''; 
-
-    // Base query for modification types count
-    $query1 = "SELECT modification_type, COUNT(*) AS count FROM public.tbl_landuse_f";
-
-    // Add filtering to the query if parameters are provided
-    if ($zoneCode || $landType) {
-        $query1 .= " WHERE";
-        $conditions = [];
-        if ($zoneCode) {
-            $conditions[] = "zone_code = :zone_code";
-        }
-        if ($landType) {
-            $conditions[] = "land_type = :land_type";
-        }
-        $query1 .= " " . implode(" AND ", $conditions);
-    }
-
+    // Query for fetching modification types count
+    $query1 = "SELECT modification_type, COUNT(*) AS count FROM public.tbl_landuse_f WHERE 1=1";
+    if ($zone_code) $query1 .= " AND zone_code = :zone_code";
+    if ($sheet_no) $query1 .= " AND sheet_no = :sheet_no";
+    if ($land_type) $query1 .= " AND land_type = :land_type";
+    if ($land_sub_type) $query1 .= " AND land_sub_type = :land_sub_type";
+    if ($modification_type) $query1 .= " AND modification_type = :modification_type";
     $query1 .= " GROUP BY modification_type";
+
     $stmt1 = $pdo->prepare($query1);
-
-    // Bind parameters if they are provided
-    if ($zoneCode) {
-        $stmt1->bindParam(':zone_code', $zoneCode);
-    }
-    if ($landType) {
-        $stmt1->bindParam(':land_type', $landType);
-    }
-
+    if ($zone_code) $stmt1->bindParam(':zone_code', $zone_code);
+    if ($sheet_no) $stmt1->bindParam(':sheet_no', $sheet_no);
+    if ($land_type) $stmt1->bindParam(':land_type', $land_type);
+    if ($land_sub_type) $stmt1->bindParam(':land_sub_type', $land_sub_type);
+    if ($modification_type) $stmt1->bindParam(':modification_type', $modification_type);
     $stmt1->execute();
     $modificationTypes = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
     // Query for fetching parcel count and percentages by zone
-    $query2 = "SELECT zone_code, COUNT(*) AS parcel_count FROM public.tbl_landuse_f";
-    if ($zoneCode || $landType) {
-        $query2 .= " WHERE";
-        $conditions = [];
-        if ($zoneCode) {
-            $conditions[] = "zone_code = :zone_code";
-        }
-        if ($landType) {
-            $conditions[] = "land_type = :land_type";
-        }
-        $query2 .= " " . implode(" AND ", $conditions);
-    }
+    $query2 = "SELECT zone_code, COUNT(*) AS parcel_count FROM public.tbl_landuse_f WHERE 1=1";
+    if ($zone_code) $query2 .= " AND zone_code = :zone_code";
+    if ($sheet_no) $query2 .= " AND sheet_no = :sheet_no";
+    if ($land_type) $query2 .= " AND land_type = :land_type";
+    if ($land_sub_type) $query2 .= " AND land_sub_type = :land_sub_type";
+    if ($modification_type) $query2 .= " AND modification_type = :modification_type";
     $query2 .= " GROUP BY zone_code";
+
     $stmt2 = $pdo->prepare($query2);
-
-    // Bind parameters if they are provided
-    if ($zoneCode) {
-        $stmt2->bindParam(':zone_code', $zoneCode);
-    }
-    if ($landType) {
-        $stmt2->bindParam(':land_type', $landType);
-    }
-
+    if ($zone_code) $stmt2->bindParam(':zone_code', $zone_code);
+    if ($sheet_no) $stmt2->bindParam(':sheet_no', $sheet_no);
+    if ($land_type) $stmt2->bindParam(':land_type', $land_type);
+    if ($land_sub_type) $stmt2->bindParam(':land_sub_type', $land_sub_type);
+    if ($modification_type) $stmt2->bindParam(':modification_type', $modification_type);
     $stmt2->execute();
     $zoneParcelData = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 
@@ -73,29 +55,20 @@ try {
     }
 
     // Query for fetching land type counts
-    $query3 = "SELECT land_type, COUNT(*) AS land_count FROM public.tbl_landuse_f";
-    if ($zoneCode || $landType) {
-        $query3 .= " WHERE";
-        $conditions = [];
-        if ($zoneCode) {
-            $conditions[] = "zone_code = :zone_code";
-        }
-        if ($landType) {
-            $conditions[] = "land_type = :land_type";
-        }
-        $query3 .= " " . implode(" AND ", $conditions);
-    }
+    $query3 = "SELECT land_type, COUNT(*) AS land_count FROM public.tbl_landuse_f WHERE 1=1";
+    if ($zone_code) $query3 .= " AND zone_code = :zone_code";
+    if ($sheet_no) $query3 .= " AND sheet_no = :sheet_no";
+    if ($land_type) $query3 .= " AND land_type = :land_type";
+    if ($land_sub_type) $query3 .= " AND land_sub_type = :land_sub_type";
+    if ($modification_type) $query3 .= " AND modification_type = :modification_type";
     $query3 .= " GROUP BY land_type ORDER BY land_count DESC";
+
     $stmt3 = $pdo->prepare($query3);
-
-    // Bind parameters if they are provided
-    if ($zoneCode) {
-        $stmt3->bindParam(':zone_code', $zoneCode);
-    }
-    if ($landType) {
-        $stmt3->bindParam(':land_type', $landType);
-    }
-
+    if ($zone_code) $stmt3->bindParam(':zone_code', $zone_code);
+    if ($sheet_no) $stmt3->bindParam(':sheet_no', $sheet_no);
+    if ($land_type) $stmt3->bindParam(':land_type', $land_type);
+    if ($land_sub_type) $stmt3->bindParam(':land_sub_type', $land_sub_type);
+    if ($modification_type) $stmt3->bindParam(':modification_type', $modification_type);
     $stmt3->execute();
     $landTypesData = $stmt3->fetchAll(PDO::FETCH_ASSOC);
     $landTypes = array_column($landTypesData, 'land_type');
@@ -107,30 +80,21 @@ try {
             zone_code,
             modification_type,
             COUNT(*) AS modification_count
-        FROM public.tbl_landuse_f";
-    if ($zoneCode || $landType) {
-        $query4 .= " WHERE";
-        $conditions = [];
-        if ($zoneCode) {
-            $conditions[] = "zone_code = :zone_code";
-        }
-        if ($landType) {
-            $conditions[] = "land_type = :land_type";
-        }
-        $query4 .= " " . implode(" AND ", $conditions);
-    }
+        FROM public.tbl_landuse_f 
+        WHERE 1=1";
+    if ($zone_code) $query4 .= " AND zone_code = :zone_code";
+    if ($sheet_no) $query4 .= " AND sheet_no = :sheet_no";
+    if ($land_type) $query4 .= " AND land_type = :land_type";
+    if ($land_sub_type) $query4 .= " AND land_sub_type = :land_sub_type";
+    if ($modification_type) $query4 .= " AND modification_type = :modification_type";
     $query4 .= " GROUP BY zone_code, modification_type ORDER BY zone_code, modification_type";
 
     $stmt4 = $pdo->prepare($query4);
-
-    // Bind parameters if they are provided
-    if ($zoneCode) {
-        $stmt4->bindParam(':zone_code', $zoneCode);
-    }
-    if ($landType) {
-        $stmt4->bindParam(':land_type', $landType);
-    }
-
+    if ($zone_code) $stmt4->bindParam(':zone_code', $zone_code);
+    if ($sheet_no) $stmt4->bindParam(':sheet_no', $sheet_no);
+    if ($land_type) $stmt4->bindParam(':land_type', $land_type);
+    if ($land_sub_type) $stmt4->bindParam(':land_sub_type', $land_sub_type);
+    if ($modification_type) $stmt4->bindParam(':modification_type', $modification_type);
     $stmt4->execute();
     $modificationData = $stmt4->fetchAll(PDO::FETCH_ASSOC);
 
@@ -174,6 +138,6 @@ try {
     echo json_encode($array_result);
 
 } catch (PDOException $e) {
-    echo json_encode(["error" => "Error fetching chart data: " . $e->getMessage()]);
+    echo "<script>console.error('Error: " . $e->getMessage() . "');</script>";
 }
 ?>
