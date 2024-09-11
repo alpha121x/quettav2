@@ -51,62 +51,110 @@ applyFiltersBtn.addEventListener("click", () => {
   });
 });
 
-// fuctions to populate dropdowns on dom load
+// Functions to populate dropdowns on DOM load
 $(document).ready(function () {
-  populateDropdown(
-    "DAL/onload_script.php?type=zones",
-    "#zone-select",
-    "zone_code",
-    "zone_code"
-  );
-  populateDropdown(
-    "DAL/onload_script.php?type=categories",
-    "#category-select",
-    "modification_type",
-    "modification_type"
-  );
-  populateDropdown(
-    "DAL/onload_script.php?type=land_types",
-    "#landTypeSelect",
-    "land_type",
-    "land_type"
-  );
+  function populateZones() {
+    $.ajax({
+      url: "DAL/onload_script.php?type=zones",
+      type: "GET",
+      data: { type: "zones" },
+      success: function (response) {
+        let zones =
+          typeof response === "string" ? JSON.parse(response) : response;
+
+        let zoneSelect = $("#zone-select");
+        zoneSelect.empty(); // Clear any existing options
+        zoneSelect.append("<option selected>Select Zone</option>"); // Default option
+
+        if (Array.isArray(zones) && zones.length > 0) {
+          zones.forEach(function (zone) {
+            zoneSelect.append(
+              `<option value="${zone.zone_code}">${zone.zone_code}</option>`
+            );
+          });
+        } else {
+          console.error("No zones found or response is invalid.");
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error fetching zones: ", xhr.responseText || error);
+      },
+    });
+  }
+
+  function populateCategories() {
+    $.ajax({
+      url: "DAL/onload_script.php?type=categories",
+      type: "GET",
+      data: { type: "categories" },
+      success: function (response) {
+        let categories =
+          typeof response === "string" ? JSON.parse(response) : response;
+
+        let categorySelect = $("#category-select");
+        categorySelect.empty();
+        categorySelect.append("<option selected>Select Category</option>");
+
+        if (Array.isArray(categories) && categories.length > 0) {
+          categories.forEach(function (category) {
+            categorySelect.append(
+              `<option value="${category.modification_type}">${category.modification_type}</option>`
+            );
+          });
+        } else {
+          console.error("No categories found or response is invalid.");
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error fetching categories: ", xhr.responseText || error);
+      },
+    });
+  }
+
+  function populateLandTypes() {
+    $.ajax({
+      url: "DAL/onload_script.php?type=land_types",
+      type: "GET",
+      data: { type: "land_types" },
+      success: function (response) {
+        let landTypes =
+          typeof response === "string" ? JSON.parse(response) : response;
+
+        let landTypeSelect = $("#land-type-select");
+        landTypeSelect.empty();
+        landTypeSelect.append("<option selected>Select Land Type</option>");
+
+        if (Array.isArray(landTypes) && landTypes.length > 0) {
+          landTypes.forEach(function (landType) {
+            landTypeSelect.append(
+              `<option value="${landType.land_type}">${landType.land_type}</option>`
+            );
+          });
+        } else {
+          console.error("No land types found or response is invalid.");
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error fetching land types: ", xhr.responseText || error);
+      },
+    });
+  }
+
+  populateZones();
+  populateCategories();
+  populateLandTypes();
 });
 
-function populateDropdown(url, dropdownId, valueKey, displayKey) {
-  $.ajax({
-    url: url,
-    type: "GET",
-    success: function (response) {
-      let items =
-        typeof response === "string" ? JSON.parse(response) : response;
-      let dropdown = $(dropdownId);
-      dropdown.empty();
-      dropdown.append("<option selected>Select Option</option>");
-      items.forEach(function (item) {
-        dropdown.append(
-          `<option value="${item[valueKey]}">${item[displayKey]}</option>`
-        );
-      });
-    },
-    error: function (xhr, status, error) {
-      console.error(`Error fetching data from ${url}: `, error);
-    },
-  });
-} // end... //
-
-document.addEventListener("DOMContentLoaded", () => {
-  // Perform AJAX request to fetch data for charts
+// DOM ready for chart initialization
+$(document).ready(() => {
   fetch("DAL/onload_script.php?type=chart_data")
     .then((response) => response.json())
     .then((data) => {
-      // Ensure data is not empty or error
       if (data.error) {
         console.error("Error fetching chart data:", data.error);
         return;
       }
 
-      // Initialize charts with the fetched data
       initReportsChart(data.modificationTypes);
       initPieChart(data.parcelPercentages, data.zoneLabels);
       initLineChart(data.landCounts, data.landTypes);
