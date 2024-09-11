@@ -1,3 +1,4 @@
+let reportsChart, pieChart, lineChart, columnChart;
 // Apply filters
 applyFiltersBtn.addEventListener("click", () => {
   // Get selected values
@@ -12,6 +13,44 @@ applyFiltersBtn.addEventListener("click", () => {
   const landSubType = document.querySelector(
     '[aria-label="Select Land Sub Type"]'
   ).value;
+
+  // Store references to the chart instances
+  let reportsChart, pieChart, lineChart, columnChart;
+
+  // Create the URL with query parameters
+  let url = `DAL/fetch_chart_data.php?zone_code=${zoneCode}&block=${block}&category=${category}&land_type=${landType}&land_sub_type=${landSubType}`;
+
+  // Perform the AJAX request to fetch data with parameters
+  fetch(url)
+    .then((response) => response.json())
+    .then((data) => {
+      // console.log(data);
+      // Check if there's any error in the response
+      if (data.error) {
+        console.error("Error fetching data:", data.error);
+        return;
+      }
+
+      // Clear existing charts
+      if (reportsChart) reportsChart.destroy();
+      if (pieChart) pieChart.destroy();
+      if (lineChart) lineChart.destroy();
+      if (columnChart) columnChart.destroy();
+
+      // Initialize charts with the fetched data
+      reportsChart = initReportsChart(data.modificationTypes);
+      pieChart = initPieChart(data.parcelPercentages, data.zoneLabels);
+      lineChart = initLineChart(data.landCounts, data.landTypes);
+      columnChart = initColumnChart(
+        data.mergeCounts,
+        data.sameCounts,
+        data.splitCounts,
+        data.zones
+      );
+    })
+    .catch((error) => {
+      console.error("Error fetching chart data:", error);
+    });
 
   // Send AJAX request with the selected filter values
   $.ajax({
@@ -412,59 +451,6 @@ $(document).ready(function () {
       console.error("AJAX Error:", textStatus, errorThrown);
     },
   });
-});
-
-// Store references to the chart instances
-let reportsChart, pieChart, lineChart, columnChart;
-
-applyFiltersBtn.addEventListener("click", () => {
-  // Get selected values from the filters
-  const zoneCode = document.getElementById("zone-select").value;
-  const block = document.getElementById("block-select").value;
-  const category = document.querySelector(
-    '[aria-label="Select Category"]'
-  ).value;
-  const landType = document.querySelector(
-    '[aria-label="Select Land Type"]'
-  ).value;
-  const landSubType = document.querySelector(
-    '[aria-label="Select Land Sub Type"]'
-  ).value;
-
-  // Create the URL with query parameters
-  let url = `DAL/fetch_chart_data.php?zone_code=${zoneCode}&block=${block}&category=${category}&land_type=${landType}&land_sub_type=${landSubType}`;
-
-  // Perform the AJAX request to fetch data with parameters
-  fetch(url)
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      // Check if there's any error in the response
-      if (data.error) {
-        console.error("Error fetching data:", data.error);
-        return;
-      }
-
-      // Clear existing charts
-      if (reportsChart) reportsChart.destroy();
-      if (pieChart) pieChart.destroy();
-      if (lineChart) lineChart.destroy();
-      if (columnChart) columnChart.destroy();
-
-      // Initialize charts with the fetched data
-      reportsChart = initReportsChart(data.modificationTypes);
-      pieChart = initPieChart(data.parcelPercentages, data.zoneLabels);
-      lineChart = initLineChart(data.landCounts, data.landTypes);
-      columnChart = initColumnChart(
-        data.mergeCounts,
-        data.sameCounts,
-        data.splitCounts,
-        data.zones
-      );
-    })
-    .catch((error) => {
-      console.error("Error fetching chart data:", error);
-    });
 });
 
 // Function to initialize the reports chart
