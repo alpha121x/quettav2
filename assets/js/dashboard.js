@@ -157,11 +157,13 @@ $(document).ready(function () {
 });
 // end... //
 
-document.addEventListener("DOMContentLoaded", () => {
+$(document).ready(() => {
   // Perform AJAX request to fetch data for charts
-  fetch("DAL/onload_script.php?type=chart_data")
-    .then((response) => response.json())
-    .then((data) => {
+  $.ajax({
+    url: "DAL/onload_script.php?type=chart_data",
+    type: "GET",
+    dataType: "json",
+    success: (data) => {
       // Ensure data is not empty or error
       if (data.error) {
         console.error("Error fetching chart data:", data.error);
@@ -178,11 +180,13 @@ document.addEventListener("DOMContentLoaded", () => {
         data.splitCounts,
         data.zones
       );
-    })
-    .catch((error) => {
+    },
+    error: (xhr, status, error) => {
       console.error("Error fetching chart data:", error);
-    });
+    }
+  });
 });
+
 
 // Function to initialize the reports chart
 function initReportsChart(modificationTypes) {
@@ -389,7 +393,7 @@ closeDrawerBtn.addEventListener("click", () => {
 $(document).ready(function() {
   // Fetch data using AJAX
   $.ajax({
-      url: './DAL/fetch_cards_data.php',
+      url: 'DAL/fetch_cards_data.php',
       method: 'POST',
       dataType: 'json',
       success: function(data) {
