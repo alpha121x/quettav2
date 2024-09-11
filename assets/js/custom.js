@@ -82,11 +82,21 @@ $("#zone-select").on("change", function () {
     // Fetch blocks based on selected zone
     $.ajax({
       type: "POST",
-      url: "DAL/fetch_dropdowns_data.php",  // Use a specific file to fetch blocks
+      url: "DAL/onload_script.php?type=block", // Specific file to handle blocks
       data: { zone_code: zoneCode },
+      dataType: "json", // Expect JSON response
       success: function (response) {
-        // Append the fetched blocks while keeping "Select Block" as the default
-        $("#block-select").append(response);
+        // Check if there is an error
+        if (response.error) {
+          console.error(response.error);
+        } else {
+          // Populate the block select dropdown with the response data
+          $.each(response, function (index, block) {
+            $("#block-select").append(
+              $("<option>", { value: block.sheet_no, text: block.sheet_no })
+            );
+          });
+        }
       },
       error: function () {
         console.error("Error fetching blocks");
@@ -96,7 +106,7 @@ $("#zone-select").on("change", function () {
 });
 
 // Fetch land sub types when the selected land type changes
-$("#landTypeSelect").on("change", function() {
+$("#landTypeSelect").on("change", function () {
   var landType = $(this).val();
 
   // Clear land sub type selection and reset to default "Select Land Sub Type"
@@ -108,15 +118,26 @@ $("#landTypeSelect").on("change", function() {
     // Fetch land sub types based on selected land type
     $.ajax({
       type: "POST",
-      url: "DAL/fetch_dropdowns_data.php", // Updated file path
-      data: {
-        land_type: landType,
+      url: "DAL/onload_script.php?type=land_sub_type", // Specific file to handle land sub types
+      data: { land_type: landType },
+      dataType: "json", // Expect JSON response
+      success: function (response) {
+        // Check if there is an error
+        if (response.error) {
+          console.error(response.error);
+        } else {
+          // Populate the land sub type select dropdown with the response data
+          $.each(response, function (index, landSubType) {
+            $("#landSubTypeSelect").append(
+              $("<option>", {
+                value: landSubType.land_sub_type,
+                text: landSubType.land_sub_type,
+              })
+            );
+          });
+        }
       },
-      success: function(response) {
-        // Append the fetched land sub types while keeping "Select Land Sub Type" as the default
-        $("#landSubTypeSelect").append(response);
-      },
-      error: function() {
+      error: function () {
         console.error("Error fetching land sub types");
       },
     });
@@ -127,7 +148,6 @@ $("#landTypeSelect").on("change", function() {
 $("#search-btn").on("click", function () {
   table.ajax.reload(); // Reload table data based on current filters
 });
-
 
 // Event listener for the "View" button
 $("#table tbody").on("click", ".view-btn", function () {
