@@ -159,7 +159,7 @@ $(document).ready(function () {
 
 document.addEventListener("DOMContentLoaded", () => {
   // Perform AJAX request to fetch data for charts
-  fetch("DAL/fetch_chart_data.php")
+  fetch("DAL/onload_script.php?type=chart_data")
     .then((response) => response.json())
     .then((data) => {
       // Ensure data is not empty or error
@@ -369,6 +369,7 @@ function initColumnChart(mergeCounts, sameCounts, splitCounts, zones) {
   // Render the column chart
   columnChart.render();
 }
+
 
 // Open drawer
 openDrawerBtn.addEventListener("click", () => {

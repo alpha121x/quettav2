@@ -43,7 +43,6 @@ switch ($type) {
         break;
 
     case 'parcel':
-        // Ensure it's a POST request and has a 'parcel_id' parameter
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['parcel_id'])) {
             try {
                 $parcelId = $_POST['parcel_id'];
@@ -62,7 +61,6 @@ switch ($type) {
         break;
 
     case 'land_sub_type':
-        // Ensure it's a POST request with 'land_type' parameter
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['land_type'])) {
             $landType = $_POST['land_type'];
 
@@ -87,7 +85,6 @@ switch ($type) {
         break;
 
     case 'block':
-        // Ensure it's a POST request with 'zone_code' parameter
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['zone_code'])) {
             $zoneCode = $_POST['zone_code'];
 
@@ -110,8 +107,73 @@ switch ($type) {
         }
         break;
 
+    case 'chart_data':
+        try {
+            // Fetch data for charts
+            $modificationTypesStmt = $pdo->query("SELECT modification_type, COUNT(*) AS count FROM public.tbl_landuse_f GROUP BY modification_type");
+            $modificationTypes = $modificationTypesStmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $parcelDistributionStmt = $pdo->query("SELECT zone_code, COUNT(*) AS parcel_count FROM public.tbl_landuse_f GROUP BY zone_code");
+            $parcelDistribution = $parcelDistributionStmt->fetchAll(PDO::FETCH_ASSOC);
+            $totalParcels = array_sum(array_column($parcelDistribution, 'parcel_count'));
+            $parcelPercentages = array_map(fn($zone) => round(($zone['parcel_count'] / $totalParcels) * 100, 2), $parcelDistribution);
+            $zoneLabels = array_map(fn($zone) => 'Zone ' . $zone['zone_code'], $parcelDistribution);
+
+            $landTypesStmt = $pdo->query("SELECT land_type, COUNT(*) AS land_count FROM public.tbl_landuse_f GROUP BY land_type ORDER BY land_count DESC");
+            $landTypes = $landTypesStmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $modificationCountsStmt = $pdo->query("
+                    SELECT zone_code, modification_type, COUNT(*) AS modification_count
+                    FROM public.tbl_landuse_f
+                    GROUP BY zone_code, modification_type
+                    ORDER BY zone_code, modification_type");
+            $modificationCounts = $modificationCountsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $zones = [];
+            $mergeCounts = [];
+            $sameCounts = [];
+            $splitCounts = [];
+
+            foreach ($modificationCounts as $row) {
+                $zoneCode = $row['zone_code'];
+                $modificationType = ucfirst(strtolower(trim($row['modification_type'])));
+                if (!isset($mergeCounts[$zoneCode])) {
+                    $zones[] = $zoneCode;
+                    $mergeCounts[$zoneCode] = 0;
+                    $sameCounts[$zoneCode] = 0;
+                    $splitCounts[$zoneCode] = 0;
+                }
+                switch ($modificationType) {
+                    case 'Merge':
+                        $mergeCounts[$zoneCode] += (int)$row['modification_count'];
+                        break;
+                    case 'Same':
+                        $sameCounts[$zoneCode] += (int)$row['modification_count'];
+                        break;
+                    case 'Split':
+                        $splitCounts[$zoneCode] += (int)$row['modification_count'];
+                        break;
+                }
+            }
+
+            $response = [
+                'modificationTypes' => $modificationTypes,
+                'parcelPercentages' => $parcelPercentages,
+                'zoneLabels' => $zoneLabels,
+                'landCounts' => array_column($landTypes, 'land_count'),
+                'landTypes' => array_column($landTypes, 'land_type'),
+                'mergeCounts' => array_values($mergeCounts),
+                'sameCounts' => array_values($sameCounts),
+                'splitCounts' => array_values($splitCounts),
+                'zones' => $zones
+            ];
+            echo json_encode($response);
+        } catch (PDOException $e) {
+            echo json_encode(["error" => "Error fetching chart data: " . $e->getMessage()]);
+        }
+        break;
+
     default:
         echo json_encode(["error" => "Invalid type"]);
         break;
 }
-?>
