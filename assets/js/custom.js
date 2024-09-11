@@ -363,3 +363,30 @@ $(document).ready(function () {
   populateLandTypes();
 });
 // end... //
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Perform AJAX request to fetch data for charts
+  fetch("DAL/onload_script.php?type=chart_data")
+    .then((response) => response.json())
+    .then((data) => {
+      // Ensure data is not empty or error
+      if (data.error) {
+        console.error("Error fetching chart data:", data.error);
+        return;
+      }
+
+      // Initialize charts with the fetched data
+      initReportsChart(data.modificationTypes);
+      initPieChart(data.parcelPercentages, data.zoneLabels);
+      initLineChart(data.landCounts, data.landTypes);
+      initColumnChart(
+        data.mergeCounts,
+        data.sameCounts,
+        data.splitCounts,
+        data.zones
+      );
+    })
+    .catch((error) => {
+      console.error("Error fetching chart data:", error);
+    });
+});
