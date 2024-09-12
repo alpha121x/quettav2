@@ -1,202 +1,5 @@
-let reportsChart, pieChart, lineChart, columnChart;
-// Apply filters
-applyFiltersBtn.addEventListener("click", () => {
-  // Get selected values
-  const zoneCode = document.getElementById("zone-select").value;
-  const block = document.getElementById("block-select").value;
-  const category = document.querySelector(
-    '[aria-label="Select Category"]'
-  ).value;
-  const landType = document.querySelector(
-    '[aria-label="Select Land Type"]'
-  ).value;
-  const landSubType = document.querySelector(
-    '[aria-label="Select Land Sub Type"]'
-  ).value;
-
-  // Store references to the chart instances
-  let reportsChart, pieChart, lineChart, columnChart;
-
-  // Create the URL with query parameters
-  let url = `DAL/fetch_chart_data.php?zone_code=${zoneCode}&block=${block}&category=${category}&land_type=${landType}&land_sub_type=${landSubType}`;
-
-  // Perform the AJAX request to fetch data with parameters
-  fetch(url)
-    .then((response) => response.json())
-    .then((data) => {
-      // console.log(data);
-      // Check if there's any error in the response
-      if (data.error) {
-        console.error("Error fetching data:", data.error);
-        return;
-      }
-
-      // Clear existing charts
-      if (reportsChart) reportsChart.destroy();
-      if (pieChart) pieChart.destroy();
-      if (lineChart) lineChart.destroy();
-      if (columnChart) columnChart.destroy();
-
-      // Initialize charts with the fetched data
-      reportsChart = initReportsChart(data.modificationTypes);
-      pieChart = initPieChart(data.parcelPercentages, data.zoneLabels);
-      lineChart = initLineChart(data.landCounts, data.landTypes);
-      columnChart = initColumnChart(
-        data.mergeCounts,
-        data.sameCounts,
-        data.splitCounts,
-        data.zones
-      );
-    })
-    .catch((error) => {
-      console.error("Error fetching chart data:", error);
-    });
-
-  // Send AJAX request with the selected filter values
-  $.ajax({
-    url: "DAL/fetch_cards_data.php",
-    method: "POST",
-    dataType: "json",
-    data: {
-      zone_code: zoneCode,
-      sheet_no: block,
-      modification_type: category,
-      land_type: landType,
-      land_sub_type: landSubType,
-    },
-    success: function (data) {
-      // Check for errors
-      if (data.error) {
-        console.error(data.error);
-      } else {
-        // Update card values
-        $("#total-zones").text(data.totalZones);
-        $("#total-blocks").text(data.totalBlocks);
-        $("#total-parcels").text(data.totalParcels);
-        $("#merge-parcels").text(data.mergeParcels);
-        $("#same-parcels").text(data.sameParcels);
-        $("#split-parcels").text(data.splitParcels);
-
-        $('.counter').counterUp();
-      }
-
-      // Close the drawer after applying filters
-      filterDrawer.classList.remove("drawer-active");
-      setTimeout(() => {
-        openDrawerBtn.style.display = "block"; // Show the open button after drawer closes
-      }, 300);
-    },
-    error: function (jqXHR, textStatus, errorThrown) {
-      console.error("AJAX Error: " + textStatus);
-    },
-  });
-});
-
-// fuctions to populate dropdowns on dom load
-$(document).ready(function () {
-  // Function to populate Zones
-  function populateZones() {
-    $.ajax({
-      url: "DAL/onload_script.php?type=zones",
-      type: "GET",
-      data: { type: "zones" },
-      success: function (response) {
-        // Check if response is already an object or a string (JSON string)
-        let zones =
-          typeof response === "string" ? JSON.parse(response) : response;
-
-        let zoneSelect = $("#zone-select");
-        zoneSelect.empty(); // Clear any existing options
-        zoneSelect.append("<option selected>Select Zone</option>"); // Default option
-
-        // Check if zones were retrieved successfully
-        if (Array.isArray(zones) && zones.length > 0) {
-          zones.forEach(function (zone) {
-            // Since only 'zone_code' is being fetched, we will use it both for value and display.
-            zoneSelect.append(
-              `<option value="${zone.zone_code}">${zone.zone_code}</option>`
-            );
-          });
-        } else {
-          console.error("No zones found or response is invalid.");
-        }
-      },
-      error: function (xhr, status, error) {
-        console.error("Error fetching zones: ", error);
-      },
-    });
-  }
-
-  function populateCategories() {
-    $.ajax({
-      url: "DAL/onload_script.php?type=categories", // Make sure the path is correct
-      type: "GET",
-      data: { type: "categories" },
-      success: function (response) {
-        // Check if response is already an object or a string (JSON string)
-        let categories =
-          typeof response === "string" ? JSON.parse(response) : response;
-
-        let categorySelect = $("#category-select");
-        categorySelect.empty(); // Clear any existing options
-        categorySelect.append("<option selected>Select Category</option>"); // Default option
-
-        // Check if categories were retrieved successfully
-        if (Array.isArray(categories) && categories.length > 0) {
-          categories.forEach(function (category) {
-            // Since only 'modification_type' is being fetched, we will use it both for value and display.
-            categorySelect.append(
-              `<option value="${category.modification_type}">${category.modification_type}</option>`
-            );
-          });
-        } else {
-          console.error("No categories found or response is invalid.");
-        }
-      },
-      error: function (xhr, status, error) {
-        console.error("Error fetching categories: ", error);
-      },
-    });
-  }
-
-  function populateLandTypes() {
-    $.ajax({
-      url: "DAL/onload_script.php?type=land_types", // Make sure the path is correct
-      type: "GET",
-      data: { type: "land_types" },
-      success: function (response) {
-        // Check if response is already an object or a string (JSON string)
-        let landTypes =
-          typeof response === "string" ? JSON.parse(response) : response;
-
-        let landTypeSelect = $("#landTypeSelect");
-        landTypeSelect.empty(); // Clear any existing options
-        landTypeSelect.append("<option selected>Select Land Type</option>"); // Default option
-
-        // Check if land types were retrieved successfully
-        if (Array.isArray(landTypes) && landTypes.length > 0) {
-          landTypes.forEach(function (landType) {
-            // Since only 'land_type' is being fetched, we will use it both for value and display.
-            landTypeSelect.append(
-              `<option value="${landType.land_type}">${landType.land_type}</option>`
-            );
-          });
-        } else {
-          console.error("No land types found or response is invalid.");
-        }
-      },
-      error: function (xhr, status, error) {
-        console.error("Error fetching land types: ", error);
-      },
-    });
-  }
-
-  // Populate both dropdowns on page load
-  populateZones();
-  populateCategories();
-  populateLandTypes();
-});
-// end... //
+ // Store references to the chart instances
+ let reportsChart, pieChart, lineChart, columnChart;
 
 $(document).ready(() => {
   // Perform AJAX request to fetch data for charts
@@ -413,6 +216,202 @@ function initColumnChart(mergeCounts, sameCounts, splitCounts, zones) {
   // Render the column chart
   columnChart.render();
 }
+
+// Apply filters
+applyFiltersBtn.addEventListener("click", () => {
+  // Get selected values
+  const zoneCode = document.getElementById("zone-select").value;
+  const block = document.getElementById("block-select").value;
+  const category = document.querySelector(
+    '[aria-label="Select Category"]'
+  ).value;
+  const landType = document.querySelector(
+    '[aria-label="Select Land Type"]'
+  ).value;
+  const landSubType = document.querySelector(
+    '[aria-label="Select Land Sub Type"]'
+  ).value;
+
+  // Create the URL with query parameters
+  let url = `DAL/fetch_chart_data.php?zone_code=${zoneCode}&block=${block}&category=${category}&land_type=${landType}&land_sub_type=${landSubType}`;
+
+  // Perform the AJAX request to fetch data with parameters
+  fetch(url)
+    .then((response) => response.json())
+    .then((data) => {
+      // console.log(data);
+      // Check if there's any error in the response
+      if (data.error) {
+        console.error("Error fetching data:", data.error);
+        return;
+      }
+
+      // Clear existing charts
+      if (reportsChart) reportsChart.destroy();
+      if (pieChart) pieChart.destroy();
+      if (lineChart) lineChart.destroy();
+      if (columnChart) columnChart.destroy();
+
+      // Initialize charts with the fetched data
+      reportsChart = initReportsChart(data.modificationTypes);
+      pieChart = initPieChart(data.parcelPercentages, data.zoneLabels);
+      lineChart = initLineChart(data.landCounts, data.landTypes);
+      columnChart = initColumnChart(
+        data.mergeCounts,
+        data.sameCounts,
+        data.splitCounts,
+        data.zones
+      );
+    })
+    .catch((error) => {
+      console.error("Error fetching chart data:", error);
+    });
+
+  // Send AJAX request with the selected filter values
+  $.ajax({
+    url: "DAL/fetch_cards_data.php",
+    method: "POST",
+    dataType: "json",
+    data: {
+      zone_code: zoneCode,
+      sheet_no: block,
+      modification_type: category,
+      land_type: landType,
+      land_sub_type: landSubType,
+    },
+    success: function (data) {
+      // Check for errors
+      if (data.error) {
+        console.error(data.error);
+      } else {
+        // Update card values
+        $("#total-zones").text(data.totalZones);
+        $("#total-blocks").text(data.totalBlocks);
+        $("#total-parcels").text(data.totalParcels);
+        $("#merge-parcels").text(data.mergeParcels);
+        $("#same-parcels").text(data.sameParcels);
+        $("#split-parcels").text(data.splitParcels);
+
+        $('.counter').counterUp();
+      }
+
+      // Close the drawer after applying filters
+      filterDrawer.classList.remove("drawer-active");
+      setTimeout(() => {
+        openDrawerBtn.style.display = "block"; // Show the open button after drawer closes
+      }, 300);
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.error("AJAX Error: " + textStatus);
+    },
+  });
+});
+
+// fuctions to populate dropdowns on dom load
+$(document).ready(function () {
+  // Function to populate Zones
+  function populateZones() {
+    $.ajax({
+      url: "DAL/onload_script.php?type=zones",
+      type: "GET",
+      data: { type: "zones" },
+      success: function (response) {
+        // Check if response is already an object or a string (JSON string)
+        let zones =
+          typeof response === "string" ? JSON.parse(response) : response;
+
+        let zoneSelect = $("#zone-select");
+        zoneSelect.empty(); // Clear any existing options
+        zoneSelect.append("<option selected>Select Zone</option>"); // Default option
+
+        // Check if zones were retrieved successfully
+        if (Array.isArray(zones) && zones.length > 0) {
+          zones.forEach(function (zone) {
+            // Since only 'zone_code' is being fetched, we will use it both for value and display.
+            zoneSelect.append(
+              `<option value="${zone.zone_code}">${zone.zone_code}</option>`
+            );
+          });
+        } else {
+          console.error("No zones found or response is invalid.");
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error fetching zones: ", error);
+      },
+    });
+  }
+
+  function populateCategories() {
+    $.ajax({
+      url: "DAL/onload_script.php?type=categories", // Make sure the path is correct
+      type: "GET",
+      data: { type: "categories" },
+      success: function (response) {
+        // Check if response is already an object or a string (JSON string)
+        let categories =
+          typeof response === "string" ? JSON.parse(response) : response;
+
+        let categorySelect = $("#category-select");
+        categorySelect.empty(); // Clear any existing options
+        categorySelect.append("<option selected>Select Category</option>"); // Default option
+
+        // Check if categories were retrieved successfully
+        if (Array.isArray(categories) && categories.length > 0) {
+          categories.forEach(function (category) {
+            // Since only 'modification_type' is being fetched, we will use it both for value and display.
+            categorySelect.append(
+              `<option value="${category.modification_type}">${category.modification_type}</option>`
+            );
+          });
+        } else {
+          console.error("No categories found or response is invalid.");
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error fetching categories: ", error);
+      },
+    });
+  }
+
+  function populateLandTypes() {
+    $.ajax({
+      url: "DAL/onload_script.php?type=land_types", // Make sure the path is correct
+      type: "GET",
+      data: { type: "land_types" },
+      success: function (response) {
+        // Check if response is already an object or a string (JSON string)
+        let landTypes =
+          typeof response === "string" ? JSON.parse(response) : response;
+
+        let landTypeSelect = $("#landTypeSelect");
+        landTypeSelect.empty(); // Clear any existing options
+        landTypeSelect.append("<option selected>Select Land Type</option>"); // Default option
+
+        // Check if land types were retrieved successfully
+        if (Array.isArray(landTypes) && landTypes.length > 0) {
+          landTypes.forEach(function (landType) {
+            // Since only 'land_type' is being fetched, we will use it both for value and display.
+            landTypeSelect.append(
+              `<option value="${landType.land_type}">${landType.land_type}</option>`
+            );
+          });
+        } else {
+          console.error("No land types found or response is invalid.");
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error fetching land types: ", error);
+      },
+    });
+  }
+
+  // Populate both dropdowns on page load
+  populateZones();
+  populateCategories();
+  populateLandTypes();
+});
+// end... //
 
 // Open drawer
 openDrawerBtn.addEventListener("click", () => {
