@@ -1,5 +1,5 @@
  // Store references to the chart instances
- let reportsChart, pieChart, lineChart, columnChart;
+ let reportsChart,lineChart, columnChart;
 
 $(document).ready(() => {
   // Perform AJAX request to fetch data for charts
@@ -248,13 +248,11 @@ applyFiltersBtn.addEventListener("click", () => {
 
       // Clear existing charts
       if (reportsChart) reportsChart.destroy();
-      if (pieChart) pieChart.destroy();
       if (lineChart) lineChart.destroy();
       if (columnChart) columnChart.destroy();
 
       // Initialize charts with the fetched data
       reportsChart = initReportsChart(data.modificationTypes);
-      pieChart = initPieChart(data.parcelPercentages, data.zoneLabels);
       lineChart = initLineChart(data.landCounts, data.landTypes);
       columnChart = initColumnChart(
         data.mergeCounts,

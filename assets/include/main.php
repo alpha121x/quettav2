@@ -52,7 +52,7 @@
             <div class="mb-3">
               <div class="form-group">
                 <select class="form-select" id="category-select" aria-label="Select Category">
-               
+
                 </select>
               </div>
             </div>
@@ -62,7 +62,7 @@
               <div class="form-group">
                 <select id="landTypeSelect" class="form-select" aria-label="Select Land Type">
                   <option selected>Select Land Type</option>
-               
+
                 </select>
               </div>
             </div>
@@ -172,24 +172,46 @@
         <div class="col-lg-4">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Donut Chart</h5>
+              <h5 class="card-title">Zone Blocks Chart</h5>
 
               <!-- Donut Chart -->
               <div id="donutChart"></div>
 
               <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                  new ApexCharts(document.querySelector("#donutChart"), {
-                    series: [44, 55, 13, 43, 22],
-                    chart: {
-                      height: 350,
-                      type: 'donut',
-                      toolbar: {
-                        show: true
+                document.addEventListener("DOMContentLoaded", function() {
+                  // AJAX request to fetch zone block data
+                  fetch('DAL/fetch_zone_blocks.php')
+                    .then(response => response.json())
+                    .then(data => {
+                      if (data.error) {
+                        console.error(data.error);
+                      } else {
+                        // Render the chart with the fetched data
+                        new ApexCharts(document.querySelector("#donutChart"), {
+                          series: data.series,
+                          chart: {
+                            height: 350,
+                            type: 'donut',
+                            toolbar: {
+                              show: true
+                            }
+                          },
+                          labels: data.labels,
+                          responsive: [{
+                            breakpoint: 480,
+                            options: {
+                              chart: {
+                                width: 200
+                              },
+                              legend: {
+                                position: 'bottom'
+                              }
+                            }
+                          }]
+                        }).render();
                       }
-                    },
-                    labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
-                  }).render();
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
                 });
               </script>
               <!-- End Donut Chart -->
@@ -197,6 +219,7 @@
             </div>
           </div>
         </div>
+
       </div>
 
     </div>
