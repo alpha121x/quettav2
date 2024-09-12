@@ -109,31 +109,36 @@ switch ($type) {
 
     case 'chart_data':
         try {
-            // Fetch data for charts
+            // Fetch data for modification types
             $modificationTypesStmt = $pdo->query("SELECT modification_type, COUNT(*) AS count FROM public.tbl_landuse_f GROUP BY modification_type");
             $modificationTypes = $modificationTypesStmt->fetchAll(PDO::FETCH_ASSOC);
 
+            // Fetch data for parcel distribution
             $parcelDistributionStmt = $pdo->query("SELECT zone_code, COUNT(*) AS parcel_count FROM public.tbl_landuse_f GROUP BY zone_code");
             $parcelDistribution = $parcelDistributionStmt->fetchAll(PDO::FETCH_ASSOC);
             $totalParcels = array_sum(array_column($parcelDistribution, 'parcel_count'));
             $parcelPercentages = array_map(fn($zone) => round(($zone['parcel_count'] / $totalParcels) * 100, 2), $parcelDistribution);
             $zoneLabels = array_map(fn($zone) => 'Zone ' . $zone['zone_code'], $parcelDistribution);
 
+            // Fetch data for land types
             $landTypesStmt = $pdo->query("SELECT land_type, COUNT(*) AS land_count FROM public.tbl_landuse_f GROUP BY land_type ORDER BY land_count DESC");
             $landTypes = $landTypesStmt->fetchAll(PDO::FETCH_ASSOC);
 
+            // Fetch modification counts grouped by zone_code and modification_type
             $modificationCountsStmt = $pdo->query("
-                    SELECT zone_code, modification_type, COUNT(*) AS modification_count
-                    FROM public.tbl_landuse_f
-                    GROUP BY zone_code, modification_type
-                    ORDER BY zone_code, modification_type");
+                        SELECT zone_code, modification_type, COUNT(*) AS modification_count
+                        FROM public.tbl_landuse_f
+                        GROUP BY zone_code, modification_type
+                        ORDER BY zone_code, modification_type");
             $modificationCounts = $modificationCountsStmt->fetchAll(PDO::FETCH_ASSOC);
 
+            // Initialize arrays for storing modification counts
             $zones = [];
             $mergeCounts = [];
             $sameCounts = [];
             $splitCounts = [];
 
+            // Process modification counts
             foreach ($modificationCounts as $row) {
                 $zoneCode = $row['zone_code'];
                 $modificationType = ucfirst(strtolower(trim($row['modification_type'])));
@@ -156,6 +161,18 @@ switch ($type) {
                 }
             }
 
+            // New: Fetch block data (distinct sheet_no per zone)
+            $blockStmt = $pdo->query("SELECT zone_code, COUNT(DISTINCT sheet_no) AS block_count 
+                                          FROM public.tbl_landuse_f 
+                                          GROUP BY zone_code");
+            $blockData = $blockStmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Calculate total blocks and prepare block data
+            $total_blocks = array_sum(array_column($blockData, 'block_count'));
+            $blockPercentages = array_map(fn($zone) => round(($zone['block_count'] / $total_blocks) * 100, 2), $blockData);
+            $blockLabels = array_map(fn($zone) => 'Zone ' . $zone['zone_code'], $blockData);
+
+            // Prepare the response
             $response = [
                 'modificationTypes' => $modificationTypes,
                 'parcelPercentages' => $parcelPercentages,
@@ -165,13 +182,17 @@ switch ($type) {
                 'mergeCounts' => array_values($mergeCounts),
                 'sameCounts' => array_values($sameCounts),
                 'splitCounts' => array_values($splitCounts),
-                'zones' => $zones
+                'zones' => $zones,
+                'blockPercentages' => $blockPercentages, // New: Block data
+                'blockLabels' => $blockLabels  // New: Block labels
             ];
+
             echo json_encode($response);
         } catch (PDOException $e) {
             echo json_encode(["error" => "Error fetching chart data: " . $e->getMessage()]);
         }
         break;
+
 
     default:
         echo json_encode(["error" => "Invalid type"]);

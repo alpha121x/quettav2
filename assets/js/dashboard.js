@@ -24,6 +24,7 @@ $(document).ready(() => {
         data.splitCounts,
         data.zones
       );
+      initDonutChart(data.blockPercentages, data.blockLabels);
     },
     error: (xhr, status, error) => {
       console.error("Error fetching chart data:", error);
@@ -215,6 +216,37 @@ function initColumnChart(mergeCounts, sameCounts, splitCounts, zones) {
 
   // Render the column chart
   columnChart.render();
+}
+
+// Function to initialize the donut chart
+function initDonutChart(blockPercentages, blockLabels) {
+  let donutChart = new ApexCharts(document.querySelector("#donutChart"), {
+    series: blockPercentages, // Data for the donut chart
+    chart: {
+      height: 350,
+      type: "donut",
+      toolbar: {
+        show: true,
+      },
+    },
+    labels: blockLabels, // Labels for the donut chart
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200,
+          },
+          legend: {
+            position: "bottom",
+          },
+        },
+      },
+    ],
+  });
+
+  // Render the donut chart
+  donutChart.render();
 }
 
 // Apply filters

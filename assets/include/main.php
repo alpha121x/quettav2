@@ -176,44 +176,6 @@
 
               <!-- Donut Chart -->
               <div id="donutChart"></div>
-
-              <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                  // AJAX request to fetch zone block data
-                  fetch('DAL/fetch_zone_blocks.php')
-                    .then(response => response.json())
-                    .then(data => {
-                      if (data.error) {
-                        console.error(data.error);
-                      } else {
-                        // Render the chart with the fetched data
-                        new ApexCharts(document.querySelector("#donutChart"), {
-                          series: data.series,
-                          chart: {
-                            height: 350,
-                            type: 'donut',
-                            toolbar: {
-                              show: true
-                            }
-                          },
-                          labels: data.labels,
-                          responsive: [{
-                            breakpoint: 480,
-                            options: {
-                              chart: {
-                                width: 200
-                              },
-                              legend: {
-                                position: 'bottom'
-                              }
-                            }
-                          }]
-                        }).render();
-                      }
-                    })
-                    .catch(error => console.error('Error fetching data:', error));
-                });
-              </script>
               <!-- End Donut Chart -->
 
             </div>
