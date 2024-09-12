@@ -76,6 +76,8 @@ applyFiltersBtn.addEventListener("click", () => {
         $("#merge-parcels").text(data.mergeParcels);
         $("#same-parcels").text(data.sameParcels);
         $("#split-parcels").text(data.splitParcels);
+
+        $('.counter').counterUp();
       }
 
       // Close the drawer after applying filters
@@ -445,6 +447,8 @@ $(document).ready(function () {
         $("#merge-parcels").text(data.mergeParcels || "N/A");
         $("#same-parcels").text(data.sameParcels || "N/A");
         $("#split-parcels").text(data.splitParcels || "N/A");
+
+        $('.counter').counterUp();
       }
     },
     error: function (jqXHR, textStatus, errorThrown) {

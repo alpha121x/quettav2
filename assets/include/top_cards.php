@@ -8,7 +8,7 @@
                     <i class="bi bi-geo-alt" style="color: #28A745; font-size: 24px;"></i>
                 </div>
                 <div class="ps-3">
-                    <h6 id="total-zones">Loading...</h6>
+                    <h6 id="total-zones" class="counter"></h6>
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@
                     <i class="bi bi-grid" style="color: #28A745; font-size: 24px;"></i>
                 </div>
                 <div class="ps-3">
-                    <h6 id="total-blocks">Loading...</h6>
+                    <h6 id="total-blocks" class="counter"></h6>
                 </div>
             </div>
         </div>
@@ -42,7 +42,7 @@
                     <i class="bi bi-box-seam" style="color: #28A745; font-size: 24px;"></i>
                 </div>
                 <div class="ps-3">
-                    <h6 id="total-parcels">Loading...</h6>
+                    <h6 id="total-parcels" class="counter"></h6>
                 </div>
             </div>
         </div>
@@ -59,7 +59,7 @@
                     <i class="bi bi-intersect" style="color: #4CAF50; font-size: 24px;"></i>
                 </div>
                 <div class="ps-3">
-                    <h6 id="merge-parcels">Loading...</h6>
+                    <h6 id="merge-parcels" class="counter"></h6>
                 </div>
             </div>
         </div>
@@ -76,7 +76,7 @@
                     <i class="bi bi-boxes" style="color: #4CAF50; font-size: 24px;"></i>
                 </div>
                 <div class="ps-3">
-                    <h6 id="same-parcels">Loading...</h6>
+                    <h6 id="same-parcels" class="counter"></h6>
                 </div>
             </div>
         </div>
@@ -93,7 +93,7 @@
                     <i class="bi bi-dash-square" style="color: #4CAF50; font-size: 24px;"></i>
                 </div>
                 <div class="ps-3">
-                    <h6 id="split-parcels">Loading...</h6>
+                    <h6 id="split-parcels" class="counter"></h6>
                 </div>
             </div>
         </div>
