@@ -311,6 +311,7 @@ applyFiltersBtn.addEventListener("click", () => {
     },
     success: function (data) {
       // Check for errors
+      // console.error(data);
       if (data.error) {
         console.error(data.error);
       } else {
