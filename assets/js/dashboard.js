@@ -1,5 +1,5 @@
- // Store references to the chart instances
- let reportsChart,lineChart, columnChart;
+// Store references to the chart instances
+let reportsChart, lineChart, columnChart;
 
 $(document).ready(() => {
   // Perform AJAX request to fetch data for charts
@@ -323,7 +323,7 @@ applyFiltersBtn.addEventListener("click", () => {
         $("#same-parcels").text(data.sameParcels);
         $("#split-parcels").text(data.splitParcels);
 
-        $('.counter').counterUp();
+        $(".counter").counterUp();
       }
 
       // Close the drawer after applying filters
@@ -444,6 +444,8 @@ $(document).ready(function () {
 });
 // end... //
 
+
+
 // Open drawer
 openDrawerBtn.addEventListener("click", () => {
   filterDrawer.classList.add("drawer-active");
@@ -478,7 +480,7 @@ $(document).ready(function () {
         $("#same-parcels").text(data.sameParcels || "N/A");
         $("#split-parcels").text(data.splitParcels || "N/A");
 
-        $('.counter').counterUp();
+        $(".counter").counterUp();
       }
     },
     error: function (jqXHR, textStatus, errorThrown) {
