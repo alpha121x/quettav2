@@ -4,4 +4,5 @@ $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVE
 
 // Define the base URL
 define('BASE_URL', $protocol . $_SERVER['HTTP_HOST'] . '/quettav2/');
+
 ?>
